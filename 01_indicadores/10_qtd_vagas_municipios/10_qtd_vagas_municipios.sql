@@ -1,0 +1,31 @@
+SELECT 
+    x.ano,
+    x.regiao,
+    x.uf_sigla,
+    x.cod_macrorregiao,
+    x.macrorregiao,
+    x.cod_regsaud,
+    x.regiao_saude,
+    x.cod_ibge,
+    x.municipio,
+    x.latitude,
+    x.longitude,
+    x.curso,
+    SUM(x.qt_matricula_total) AS matriculas,
+    SUM(x.qt_ingresso_total) AS ingressos,
+    SUM(x.qt_vaga_total) AS vagas,
+    SUM(x.qt_inscrito_total) AS inscritos
+FROM "Open Analytics Layer"."Educação"."Quantidade de vagas, matriculados, concluintes e inscritos em curso superior por instituição de ensino" x
+GROUP BY 
+       ano,
+       regiao,
+       uf_sigla,
+       cod_macrorregiao,
+       macrorregiao,
+       cod_regsaud,
+       regiao_saude,
+       cod_ibge,
+       municipio,
+       latitude,
+       longitude,
+       curso
