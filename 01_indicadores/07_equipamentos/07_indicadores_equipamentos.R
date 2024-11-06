@@ -1,5 +1,4 @@
 
-
 library(tidyverse)
 library(RODBC)
 library(geobr)
@@ -10,8 +9,6 @@ library(ggspatial)
 
 
 # Leitura dos dados -------------------------------------------------------
-
-
 
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
@@ -39,8 +36,7 @@ equipamentos <- sqlQuery(channel,
                          as.is = TRUE)
 
 
-# tratamento dos dados ----------------------------------------------------
-
+# Tratamento dos dados ----------------------------------------------------
 
 equipamentos$soma_populacao <- as.integer(equipamentos$soma_populacao)
 equipamentos$soma_quantidade_equip_n_sus <- as.integer(equipamentos$soma_quantidade_equip_n_sus)
@@ -58,6 +54,7 @@ equip_mc_goias <-
     mutate(Macrorregião = substr(macrorregiao, 13, 27))
 
 
+# Criação do mapa ------------------------------------------------------------
 
 a <- equip_mc_goias |> 
   ggplot(aes(x = ano, y = razao, col = Macrorregião)) + 
@@ -66,7 +63,7 @@ a <- equip_mc_goias |>
   xlab("Ano") +
   ylab("Razão de equipamentos por 10 mil habitantes") +
   labs(caption = "* foram considerados os seguintes aparelhos: raio-x, tomógrafo, mamógrafo e ressonância") +
-  ggtitle("Evolução da razão de equipamentos* por população em macrorregiões de Goiás",
+  ggtitle("Evolução da razão de equipamentos* por população em macrorregiões de saúde em Goiás",
           "Fonte: CNES-Equipamentos, competência de janeiro de cada ano") +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
@@ -79,7 +76,7 @@ a <- equip_mc_goias |>
   ) +
   scale_x_continuous(breaks = seq(min(equip_mc_goias$ano), max(equip_mc_goias$ano), by = 1)) 
 
+a
+
 ggsave(filename = "razao_equipamentos.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
-
-  

@@ -1,5 +1,4 @@
 
-
 library(tidyverse)
 library(RODBC)
 library(geobr)
@@ -7,6 +6,9 @@ library(scales)
 library(sf) 
 library(ggrepel) 
 library(ggspatial) 
+
+
+# Leitura dos Dados -------------------------------------------------------
 
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
@@ -44,9 +46,7 @@ precarizacao_enf <-
                  quantidade = as.numeric(quantidade))
 
 
-
-# Tratando os dados -------------------------------------------------------
-
+# Tratamento dos dados -------------------------------------------------------
 
 mun <- read_municipality(code_muni="all", 
                          year=2022,
@@ -68,9 +68,7 @@ mun_sf <- st_as_sf(mun2)
 mun_sf$percentual[is.na(mun_sf$percentual)] <- 0
 
 
-
-# Criando mapa ------------------------------------------------------------
-
+# Criação do mapa ------------------------------------------------------------
 
 a <- ggplot() +
   geom_sf(data = mun_sf, 
@@ -102,7 +100,5 @@ a <- ggplot() +
 
 a
 
-#ggsave(filename = "precarizacao.jpeg", plot = a,
-#       dpi = 400, width = 16, height = 10)
-
-  
+ggsave(filename = "precarizacao.jpeg", plot = a,
+       dpi = 400, width = 16, height = 10)
