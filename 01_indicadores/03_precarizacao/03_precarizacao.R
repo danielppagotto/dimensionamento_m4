@@ -36,17 +36,17 @@ precarizacao <- sqlQuery(channel,
                          as.is = TRUE)
 
 
-precarizacao_enf <- 
-          precarizacao |> 
-          filter(nivel_atencao == "Primária" &
-                 categoria == "Enfermeiro" & 
-                 ano == "2024", 
-                 categorias_vinculos == "Precarizado") |> 
-          mutate(percentual = as.numeric(percentual),
-                 quantidade = as.numeric(quantidade))
-
-
 # Tratamento dos dados -------------------------------------------------------
+
+precarizacao_enf <- 
+  precarizacao |> 
+  filter(nivel_atencao == "Primária" &
+        categoria == "Enfermeiro" & 
+        ano == "2024", 
+        categorias_vinculos == "Precarizado") |> 
+  mutate(percentual = as.numeric(percentual),
+        quantidade = as.numeric(quantidade))
+
 
 mun <- read_municipality(code_muni="all", 
                          year=2022,

@@ -36,7 +36,7 @@ equipamentos <- sqlQuery(channel,
                          as.is = TRUE)
 
 
-# Tratamento dos dados ----------------------------------------------------
+# tratamento dos dados ----------------------------------------------------
 
 equipamentos$soma_populacao <- as.integer(equipamentos$soma_populacao)
 equipamentos$soma_quantidade_equip_n_sus <- as.integer(equipamentos$soma_quantidade_equip_n_sus)
@@ -54,7 +54,7 @@ equip_mc_goias <-
     mutate(Macrorregião = substr(macrorregiao, 13, 27))
 
 
-# Criação do mapa ------------------------------------------------------------
+# Criação do Gráfico ------------------------------------------------------
 
 a <- equip_mc_goias |> 
   ggplot(aes(x = ano, y = razao, col = Macrorregião)) + 
