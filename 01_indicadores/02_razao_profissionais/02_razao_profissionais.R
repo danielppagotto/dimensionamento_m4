@@ -62,18 +62,21 @@ a <-
   geom_text(aes(label = round(razao, 2)),    
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 5) + 
-  labs(title = "Comparação da Razão de ACS por População nas Regiões do Brasil",
-       x = "Região",
+  
+  ggtitle("Comparação da Razão de ACS por População nas Regiões do Brasil",
+       "Fonte: CNES-PF, competência de janeiro de cada ano") +
+  labs(x = "Região",
        y = "Razão (total de ACS por 10.000 habitantes)",
        fill = "Ano") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
+  theme(plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size = 18),
+        axis.title = element_text(size = 20),
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
         axis.text.y = element_text(size = 16),
         legend.position = "top", 
         legend.title = element_text(size = 16),
-        legend.text = element_text(size = 14),
-        plot.title = element_text(size = 20, face = "bold"),
-        axis.title = element_text(size = 20))
+        legend.text = element_text(size = 14))
 a
 
 ggsave(filename = "razao_profissionais.jpeg", plot = a,
