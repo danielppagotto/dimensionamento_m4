@@ -90,5 +90,6 @@ a <- ggplot() +
 
 a
 
-ggsave(filename = "precarizacao.jpeg", plot = a,
+ggsave(filename = "vinculos.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
