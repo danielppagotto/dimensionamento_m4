@@ -28,62 +28,52 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Distribuição dos tipos de vínculos de profissionais"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Número médio de vínculos"'
 
 
-precarizacao <- sqlQuery(channel, 
+vinculos <- sqlQuery(channel, 
                          query,
                          as.is = TRUE)
 
 
 # Tratamento dos dados -------------------------------------------------------
 
-precarizacao_enf <- 
-  precarizacao |> 
-  filter(nivel_atencao == "Primária" &
-        categoria == "Enfermeiro" & 
-        ano == "2024", 
-        categorias_vinculos == "Precarizado") |> 
-  mutate(percentual = as.numeric(percentual),
-        quantidade = as.numeric(quantidade))
+media_vinculos <- 
+  vinculos |> 
+  filter(categoria == "Médico",
+         ano == "2024")
 
 
-mun <- read_municipality(code_muni="all", 
+mun <- 
+  read_municipality(code_muni="all", 
                          year=2022,
-                         showProgress = FALSE)
-
-estados_br <- read_state(year = 2020)
-
-mun <- mun |> 
-  mutate(code_muni = 
-           as.character(code_muni)) |> 
+                         showProgress = FALSE) |>
+  filter(substr(code_muni, 1, 2) == "43") |>
+  mutate(code_muni = as.character(code_muni)) |>
   mutate(code_muni = substr(code_muni, 1, 6))
 
 
-mun2 <- mun |> 
-  left_join(precarizacao_enf, by= c("code_muni" = "cod_ibge"))
+mun2 <- 
+  mun |> 
+  left_join(media_vinculos, by= c("code_muni" = "cod_ibge"))
 
 mun_sf <- st_as_sf(mun2)
 
-mun_sf$percentual[is.na(mun_sf$percentual)] <- 0
+mun_sf$vinc_medio[is.na(mun_sf$vinc_medio)] <- 0
 
 
 # Criação do mapa ------------------------------------------------------------
 
 a <- ggplot() +
   geom_sf(data = mun_sf, 
-          aes(fill = percentual, 
-              geometry = geom)) +
-
-  scale_fill_gradientn(colors = c("#02592e", 
-                                  "#d4e302",
-                                  "#D92B3A"), 
-                       values = 
-                         rescale(c(0,50,100)), 
-                       limits = c(0,100),
-                       breaks = c(0, 50, 100)) + 
+          aes(fill = vinc_medio, geometry = geom)) +
+  
+  scale_fill_gradientn(colors = c("#f0f9e8", "#2b8cbe", "#084081"), 
+                       values = rescale(c(1, 3, 5)), 
+                       limits = c(1, 5),
+                       breaks = c(1, 3, 5)) + 
   theme_minimal() +
-  labs(fill = "% de vínculos precários") +
+  labs(fill = "Média de vínculos") +
   theme(legend.position = "bottom",
         legend.justification = "center",
         legend.box = "horizontal",
@@ -91,14 +81,15 @@ a <- ggplot() +
         axis.text.y = element_text(size = 18),
         legend.text = element_text(size = 18),
         plot.title = element_text(size = 20)) +
-   annotation_north_arrow(location = "tr",  
+  annotation_north_arrow(location = "tr",  
                          which_north = "true",
                          style = north_arrow_fancy_orienteering()) +
   annotation_scale(location = "bl",  
                    width_hint = 0.3)  +
-  ggtitle("Precarização de vínculos - Enfermagem na APS","Fonte: CNES (01/2024)")
+  ggtitle("Número Médio de Vínculos de Médicos no RS","Fonte: CNES-PF (01/2024)")
 
 a
 
-ggsave(filename = "precarizacao.jpeg", plot = a,
+ggsave(filename = "vinculos.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
