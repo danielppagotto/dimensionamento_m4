@@ -46,12 +46,11 @@ mortalidade <-
   homicidios |> 
   drop_na() |> 
   filter(ano == "2023") |> 
-  group_by(ano, regiao) |> 
+  group_by(ano, uf_sigla) |> 
   summarise(
     pop = sum(populacao, na.rm = TRUE),
     obitos = sum(obitos_ano_homicidio, na.rm = TRUE)) |> 
-  mutate(razao = 100000 * obitos / pop) |> 
-  mutate(Região = substr(regiao, 7, 27))
+  mutate(razao = 100000 * obitos / pop)
 
 
 # Criação do Gráfico ------------------------------------------------------

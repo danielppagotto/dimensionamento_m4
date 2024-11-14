@@ -30,43 +30,49 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Carga horária média de profissionais da saúde"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Percentual de força de trabalho habilitada atuando em estabelecimentos de saúde - análise por UF"'
 
 
-horas <- sqlQuery(channel, 
-                          query,
-                          as.is = TRUE)
+trabalho <- sqlQuery(channel, 
+                        query,
+                        as.is = TRUE)
 
 
 # tratamento dos dados ----------------------------------------------------
 
-carga_horaria <- 
-  horas |> 
-  filter(ano == '2024',
-         uf_sigla == 'MS',
-         categoria %in% c("Enfermeiro", 
-                          "Médico", 
-                          "Técnico ou Auxiliar de Enfermagem"))
+trabalho$atuantes <- as.integer(trabalho$atuantes)
+trabalho$habilitados <- as.integer(trabalho$habilitados)
+
+força_trabalho <- 
+  trabalho |> 
+  filter(categoria == "Psicólogos") |> 
+  group_by(categoria, uf) |>
+  summarise(percentual = 100 * sum(atuantes) / sum(habilitados)) |> 
+  drop_na()
 
 
 # Criação do gráfico ------------------------------------------------------------
 
-a <- 
-  ggplot(carga_horaria, aes(x = categoria, y = MEDIA_PROF, fill = categoria)) +
-  geom_boxplot() + 
-  ggtitle("Distribuição da Carga Horária de Profissionais da Saúde no MS em 2024",
-          "Fonte: CNES-PF (01/2024)") +
-  labs(x = "Categoria Profissional",
-       y = "Carga Horária") +
+a <- força_trabalho |> 
+  ggplot(aes(x = percentual, y = reorder(uf, percentual))) + 
+  geom_col() +  # Troquei geom_line por geom_col para representar barras
+  theme_minimal() + 
+  xlab("Percentual de psicólogos atuantes (%)") +
+  ylab("UF") +
+  ggtitle("Percentual de Psicólogos Atuantes em Relação aos Habilitados por UF",
+          "Fonte: CNES-PF e Conselhos de Saúde, competência de janeiro de 2024") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
         plot.subtitle = element_text(size = 18),
         axis.title = element_text(size = 20),
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
-        legend.position = "none")
+        legend.position = "top", 
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 14))
+
 a
 
-ggsave(filename = "carga_horaria.jpeg", plot = a,
+ggsave(filename = "habilitada_vs_estabelecimentos.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
 

@@ -68,10 +68,10 @@ a <- ggplot() +
   geom_sf(data = mun_sf, 
           aes(fill = vinc_medio, geometry = geom)) +
   
-  scale_fill_gradientn(colors = c("#f0f9e8", "#2b8cbe", "#084081"), 
-                       values = rescale(c(1, 3, 5)), 
-                       limits = c(1, 5),
-                       breaks = c(1, 3, 5)) + 
+scale_fill_gradientn(colors = c("#FAE9A0", "#B6960D", "#796409"), 
+                     values = rescale(c(1, 3, 5)), 
+                     limits = c(1, 5),
+                     breaks = c(1, 3, 5)) +
   theme_minimal() +
   labs(fill = "Média de vínculos") +
   theme(legend.position = "bottom",

@@ -5,7 +5,9 @@ library(geobr)
 library(scales)
 library(sf) 
 library(ggrepel) 
-library(ggspatial) 
+library(ggspatial)
+library(ggplot2)
+
 
 
 # Leitura dos dados -------------------------------------------------------
@@ -28,39 +30,34 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de médicos de medicina da família por população"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Remuneração média de profissionais por UF"'
 
 
-medicos <- sqlQuery(channel, 
-                         query,
-                         as.is = TRUE)
+remuneracao <- sqlQuery(channel, 
+                   query,
+                   as.is = TRUE)
 
 
 # tratamento dos dados ----------------------------------------------------
 
-medicos$populacao <- as.integer(medicos$populacao)
-medicos$qtd_distinta_cpf_cbo <- as.integer(medicos$qtd_distinta_cpf_cbo)
-
-
-medicos_familia <- 
-  medicos |> 
-  filter(uf_sigla == "BA") |> 
-  group_by(ano,macrorregiao) |> 
-  summarise(pop = sum(populacao),
-            qtd_medicos = sum(qtd_distinta_cpf_cbo)) |> 
-  mutate(razao = 10000 * (qtd_medicos)/pop)
+remuneracao_media <- 
+  remuneracao |> 
+  filter(uf_sigla == "MG") |>
+  group_by(ano, categoria) |> 
+  summarise(media_rendimento = mean(rendimento_medio, na.rm = TRUE))
 
 
 # Criação do Gráfico ------------------------------------------------------
 
-a <- medicos_familia |> 
-  ggplot(aes(x = as.numeric(ano), y = razao, col = macrorregiao)) + 
+a <- remuneracao_media |> 
+  ggplot(aes(x = ano, y = media_rendimento, col = categoria)) + 
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("Razão de médicos da família por 10 mil habitantes") +
-  ggtitle("Evolução da razão de médicos da família por população em macrorregiões de saúde na Bahia",
-          "Fonte: CNES-PF, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
+  ylab("Média de remuneração") +
+  ggtitle("Evolução da remuneração média de profissionais da saúde em Minas Gerais",
+          "Fonte: PNADc") +
+  labs(color = "Categoria Profissional") +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     plot.subtitle = element_text(size = 18),
@@ -69,10 +66,10 @@ a <- medicos_familia |>
     legend.title = element_text(size = 16),
     legend.text = element_text(size = 14),
     plot.caption = element_text(size = 14, hjust = 0, color = "grey30")
-  ) +
-  scale_x_continuous(breaks = seq(min(medicos_familia$ano), max(medicos_familia$ano), by = 1)) 
+  ) 
 
 a
 
-ggsave(filename = "razao_medicos_familia.jpeg", plot = a,
+ggsave(filename = "remuneracao_media.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
+
