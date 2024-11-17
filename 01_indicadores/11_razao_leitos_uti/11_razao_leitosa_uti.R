@@ -73,7 +73,7 @@ a <- leitos_goias_long |>
   ggtitle("Evolução da razão de leitos de UTI por população em Goiás",
           "Fonte: CNES-Leitos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   scale_color_discrete(
-    name = "Tipo de UTI",
+    name = "Tipo",
     labels = c("UTI" = "Leitos de UTI", "UTIP" = "Leitos de UTI Pediátrica", "UTIN" = "Leitos de UTI Neonatal")  # Alterando apenas os rótulos
   ) +  
   theme(
