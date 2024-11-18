@@ -88,6 +88,6 @@ a <- leitos_goias_long |>
 
 a
 
-ggsave(filename = "leitos_UTI.jpeg", plot = a,
+ggsave(filename = "razao_leitos_uti.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
 
