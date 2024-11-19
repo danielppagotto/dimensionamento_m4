@@ -12,6 +12,7 @@ library(ggplot2)
 
 # Leitura dos dados -------------------------------------------------------
 
+
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
 dremio_uid <- Sys.getenv("uid")
@@ -30,6 +31,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer"."Educação"."Quantidade de vagas, matriculados, concluintes e inscritos em curso superior por município"'
 
 
@@ -38,9 +40,12 @@ educacao <- sqlQuery(channel,
                      as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
 
+
 educacao$vagas <- as.integer(educacao$vagas)
+
 
 educacao_vagas <- educacao |> 
   filter(curso == "Medicina",
@@ -53,13 +58,14 @@ educacao_vagas <- educacao |>
 
 # Criação do gráfico ------------------------------------------------------------
 
+
 a <- ggplot(educacao_vagas, aes(x = uf_sigla, y = total_vagas, fill = factor(ano))) + 
   geom_col(position = "dodge") +
   geom_text(aes(label = total_vagas), position = position_dodge(width = 0.9), vjust = -0.5, size = 5) +
-  ggtitle("Comparação de Vagas em Medicina nos Estados do Sul do Brasil",
+  ggtitle("Comparação do Número de Vagas no Curso de Medicina nos Estados do Sul do Brasil",
           "Fonte: Censo da Educação Superior") +
   labs(x = "Estado", 
-       y = "Total de Vagas de Medicina", 
+       y = "Total de vagas de medicina", 
        fill = "Ano") +
   theme_minimal() +
   scale_x_discrete(labels = c("PR" = "Paraná", "SC" = "Santa Catarina", "RS" = "Rio Grande do Sul")) +
@@ -76,7 +82,10 @@ a <- ggplot(educacao_vagas, aes(x = uf_sigla, y = total_vagas, fill = factor(ano
     legend.text = element_text(size = 14)
   )
 
+
 a
+
 
 ggsave(filename = "qtd_vagas_municipios.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+

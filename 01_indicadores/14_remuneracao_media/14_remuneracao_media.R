@@ -12,6 +12,7 @@ library(ggplot2)
 
 # Leitura dos dados -------------------------------------------------------
 
+
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
 dremio_uid <- Sys.getenv("uid")
@@ -30,6 +31,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Remuneração média de profissionais por UF"'
 
 
@@ -38,7 +40,9 @@ remuneracao <- sqlQuery(channel,
                    as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
+
 
 remuneracao_media <- 
   remuneracao |> 
@@ -47,7 +51,9 @@ remuneracao_media <-
   summarise(media_rendimento = mean(rendimento_medio, na.rm = TRUE))
 
 
+
 # Criação do Gráfico ------------------------------------------------------
+
 
 a <- remuneracao_media |> 
   ggplot(aes(x = ano, y = media_rendimento, col = categoria)) + 
@@ -55,9 +61,9 @@ a <- remuneracao_media |>
   theme_minimal() + 
   xlab("Ano") +
   ylab("Média de remuneração") +
-  ggtitle("Evolução da remuneração média de profissionais da saúde em Minas Gerais",
-          "Fonte: PNADc") +
-  labs(color = "Categoria Profissional") +
+  ggtitle("Evolução da Remuneração Média de Profissionais da Saúde em Minas Gerais",
+          "Fonte: Pesquisa Nacional por Amostra de Domicílios Contínua (PNADc)") +
+  labs(color = "Categoria profissional") +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     plot.subtitle = element_text(size = 18),
@@ -68,8 +74,11 @@ a <- remuneracao_media |>
     plot.caption = element_text(size = 14, hjust = 0, color = "grey30")
   ) 
 
+
 a
+
 
 ggsave(filename = "remuneracao_media.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
+
 

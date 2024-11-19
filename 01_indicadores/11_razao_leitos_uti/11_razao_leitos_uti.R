@@ -12,6 +12,7 @@ library(ggplot2)
 
 # Leitura dos dados -------------------------------------------------------
 
+
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
 dremio_uid <- Sys.getenv("uid")
@@ -30,6 +31,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Infraestrutura."Razão de Leitos de UTI por população"'
 
 
@@ -38,11 +40,15 @@ leitos <- sqlQuery(channel,
                    as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
+
+
 leitos$populacao <- as.integer(leitos$populacao)
 leitos$qtd_UTI <- as.integer(leitos$qtd_UTI)
 leitos$qtd_UTIP <- as.integer(leitos$qtd_UTIP)
 leitos$qtd_UTIN <- as.integer(leitos$qtd_UTIN)
+
 
 leitos_goias <- 
   leitos |> 
@@ -56,21 +62,24 @@ leitos_goias <-
   mutate(UTIP = 10000 * (qtd_UTIP/pop)) |> 
   mutate(UTIN = 10000 * (qtd_UTIN/pop)) 
 
+
 leitos_goias_long <- leitos_goias |> 
   pivot_longer(cols = c(UTI, UTIP, UTIN), 
                names_to = "tipo_uti", 
                values_to = "valor_uti")
 
 
+
 # Criação do Gráfico ------------------------------------------------------
+
 
 a <- leitos_goias_long |> 
   ggplot(aes(x = ano, y = valor_uti, color = tipo_uti, group = tipo_uti)) +
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("Razão de leitos de UTI por 10 mil habitantes") +
-  ggtitle("Evolução da razão de leitos de UTI por população em Goiás",
+  ylab("Razão (total de leitos de UTI por 10.000 habitantes)") +
+  ggtitle("Evolução da Razão de Leitos de UTI por População em Goiás",
           "Fonte: CNES-Leitos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   scale_color_discrete(
     name = "Tipo",
@@ -86,8 +95,11 @@ a <- leitos_goias_long |>
     plot.caption = element_text(size = 14, hjust = 0, color = "grey30")
   )
 
+
 a
+
 
 ggsave(filename = "razao_leitos_uti.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
+
 

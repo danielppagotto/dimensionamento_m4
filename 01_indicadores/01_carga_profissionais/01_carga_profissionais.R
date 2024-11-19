@@ -60,8 +60,8 @@ a <-
   geom_boxplot() + 
   ggtitle("Distribuição da Carga Horária de Profissionais da Saúde no Mato Grosso do Sul em 2024",
           "Fonte: CNES-Profissionais, competência de janeiro de 2024") +
-  labs(x = "Categoria Profissional",
-       y = "Carga Horária") +
+  labs(x = "Categoria profissional",
+       y = "Carga horária") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
         plot.subtitle = element_text(size = 18),
@@ -76,6 +76,5 @@ a
 
 ggsave(filename = "carga_horaria.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
-
 
 

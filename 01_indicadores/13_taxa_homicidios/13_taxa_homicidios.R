@@ -8,7 +8,9 @@ library(ggrepel)
 library(ggspatial) 
 
 
+
 # Leitura dos dados -------------------------------------------------------
+
 
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
@@ -37,11 +39,14 @@ homicidios <- sqlQuery(channel,
                          as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
+
 
 homicidios$populacao <- as.integer(homicidios$populacao)
 homicidios$obitos_ano_homicidio <- as.integer(homicidios$obitos_ano_homicidio)
 homicidios$taxa_homicidios_por_populacao <- as.numeric(homicidios$taxa_homicidios_por_populacao)
+
 
 mortalidade <- 
   homicidios |> 
@@ -54,7 +59,9 @@ mortalidade <-
   mutate(razao = 100000 * obitos / pop)
 
 
+
 # Criação do Gráfico ------------------------------------------------------
+
 
 a <- mortalidade |> 
   ggplot(aes(x = fct_reorder(regiao, razao), y = razao, fill = regiao)) +
@@ -66,7 +73,7 @@ a <- mortalidade |>
   ggtitle("Distribuição da Taxa de Homicídios por Região do Brasil em 2023", 
           "Fonte: Sistema de Informação sobre Mortalidade (SIM)") +
   labs(x = "Região",
-       y = "Taxa de homcídios (por 100.000 habitantes)",
+       y = "Taxa de homicídios (total de óbitos por 100.000 habitantes)",
        fill = "Região") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
@@ -78,8 +85,11 @@ a <- mortalidade |>
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 14))
 
+
 a
+
 
 ggsave(filename = "taxa_homicidios.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
+
 

@@ -12,6 +12,7 @@ library(ggplot2)
 
 # Leitura dos dados -------------------------------------------------------
 
+
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
 dremio_uid <- Sys.getenv("uid")
@@ -30,6 +31,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Infraestrutura."Razão de leitos por população"'
 
 
@@ -38,7 +40,10 @@ leitos <- sqlQuery(channel,
                   as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
+
+
 leitos$populacao <- as.integer(leitos$populacao)
 leitos$quantidade_sus <- as.integer(leitos$quantidade_sus)
 leitos$quantidade_nao_sus <- as.integer(leitos$quantidade_nao_sus)
@@ -56,11 +61,14 @@ razao_leitos <-
   mutate(razao_nsus = 10000 * (qtd_nsus)/pop) |> 
   drop_na()
 
+
 razao_leitos_long <- razao_leitos |> 
   pivot_longer(cols = c(razao_sus, razao_nsus), names_to = "tipo", values_to = "razao")
 
 
+
 # Criação do Gráfico ------------------------------------------------------
+
 
 a <- razao_leitos_long |> 
   ggplot(aes(x = regiao, y = razao, fill = tipo)) +
@@ -68,8 +76,8 @@ a <- razao_leitos_long |>
   geom_text(aes(label = round(razao, 2)),    
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 5) + 
-  ggtitle("Comparação da Razão de Leitos SUS e Não SUS por População nas Regiões em 2024",
-          "Fonte: CNES-LT, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
+  ggtitle("Comparação da Razão de Leitos SUS e Não SUS por População nas Regiões do Brasil em 2024",
+          "Fonte: CNES-Leitos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   labs(x = "Região",
        y = "Razão (total de leitos por 10.000 habitantes)",
        fill = "Tipo") +
@@ -85,8 +93,11 @@ a <- razao_leitos_long |>
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 14))
 
+
 a
+
 
 ggsave(filename = "razao_leitos.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
+
 

@@ -12,6 +12,7 @@ library(ggplot2)
 
 # Leitura dos dados -------------------------------------------------------
 
+
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
 dremio_uid <- Sys.getenv("uid")
@@ -30,6 +31,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Percentual de força de trabalho habilitada atuando em estabelecimentos de saúde - análise por UF"'
 
 
@@ -38,10 +40,13 @@ trabalho <- sqlQuery(channel,
                         as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
+
 
 trabalho$atuantes <- as.integer(trabalho$atuantes)
 trabalho$habilitados <- as.integer(trabalho$habilitados)
+
 
 força_trabalho <- 
   trabalho |> 
@@ -51,7 +56,9 @@ força_trabalho <-
   drop_na()
 
 
+
 # Criação do gráfico ------------------------------------------------------------
+
 
 a <- força_trabalho |> 
   ggplot(aes(x = percentual, y = reorder(uf, percentual))) + 
@@ -60,7 +67,7 @@ a <- força_trabalho |>
   xlab("Percentual de psicólogos atuantes (%)") +
   ylab("UF") +
   ggtitle("Percentual de Psicólogos Atuantes em Relação aos Habilitados por UF",
-          "Fonte: CNES-PF e Conselhos de Saúde, competência de janeiro de 2024") +
+          "Fonte: CNES-Profissionais e Conselhos de Saúde, competência de janeiro de 2024") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
         plot.subtitle = element_text(size = 18),
@@ -71,8 +78,11 @@ a <- força_trabalho |>
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 14))
 
+
 a
+
 
 ggsave(filename = "habilitada_vs_estabelecimentos.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
 

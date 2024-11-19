@@ -12,6 +12,7 @@ library(ggplot2)
 
 # Leitura dos dados -------------------------------------------------------
 
+
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
 dremio_uid <- Sys.getenv("uid")
@@ -30,6 +31,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de profissionais por população segundo padronização de FTE"'
 
 
@@ -38,9 +40,12 @@ fte <- sqlQuery(channel,
                      as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
 
+
 fte$ch_total <- as.integer(fte$ch_total)
+
 
 fte_40 <- fte |> 
   filter(categoria == "Enfermeiro",
@@ -51,15 +56,17 @@ fte_40 <- fte |>
                          "240810", "211130"))
 
 
+
 # Criação do gráfico ------------------------------------------------------------
+
 
 a <- fte_40 |> 
   ggplot(aes(x = ano, y = FTE_40, color = factor(cod_ibge), group = cod_ibge)) +  # Usando 'cod_ibge' para distinguir as linhas
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("FTE 40 (Carga horária total por 40 horas trabalhadas)") + 
-  ggtitle("Evolução da FTE de enfermeiros por capital do nordeste",
+  ylab("FTE 40 (carga horária total por 40 horas trabalhadas)") + 
+  ggtitle("Evolução da Métrica FTE de Enfermeiros nas Capitais do Nordeste",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano") +
   scale_color_discrete(name = "Capital", 
                        labels = c("292740" = "Salvador (BA)", 
@@ -81,7 +88,11 @@ a <- fte_40 |>
     plot.caption = element_text(size = 14, hjust = 0, color = "grey30")
   ) 
 
+
 a
+
 
 ggsave(filename = "razao_profissionais_fte.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
+

@@ -8,7 +8,9 @@ library(ggrepel)
 library(ggspatial) 
 
 
+
 # Leitura dos Dados -------------------------------------------------------
+
 
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
@@ -28,6 +30,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Número médio de vínculos"'
 
 
@@ -36,7 +39,9 @@ vinculos <- sqlQuery(channel,
                          as.is = TRUE)
 
 
+
 # Tratamento dos dados -------------------------------------------------------
+
 
 media_vinculos <- 
   vinculos |> 
@@ -57,12 +62,16 @@ mun2 <-
   mun |> 
   left_join(media_vinculos, by= c("code_muni" = "cod_ibge"))
 
+
 mun_sf <- st_as_sf(mun2)
+
 
 mun_sf$vinc_medio[is.na(mun_sf$vinc_medio)] <- 0
 
 
+
 # Criação do mapa ------------------------------------------------------------
+
 
 a <- ggplot() +
   geom_sf(data = mun_sf, 
@@ -86,10 +95,14 @@ scale_fill_gradientn(colors = c("#FAE9A0", "#B6960D", "#796409"),
                          style = north_arrow_fancy_orienteering()) +
   annotation_scale(location = "bl",  
                    width_hint = 0.3)  +
-  ggtitle("Número Médio de Vínculos de Médicos no RS","Fonte: CNES-PF (01/2024)")
+  ggtitle("Número Médio de Vínculos de Médicos no Rio Grande do Sul",
+          "Fonte: CNES-Profissionais, competência de janeiro de 2024")
+
 
 a
 
+
 ggsave(filename = "vinculos.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
 

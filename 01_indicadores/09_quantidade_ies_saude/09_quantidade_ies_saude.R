@@ -76,6 +76,33 @@ ggsave(filename = "razao_equipamentos.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 library(tidyverse)
 library(RODBC)
 library(geobr)
@@ -122,7 +149,7 @@ IES$qtd_ies_cursos <- as.integer(IES$qtd_ies_cursos)
 qtd_IES <- 
   IES |> 
   filter(regiao == "Região Centro-Oeste",
-         ano %in% c(2018, 2022)) |> 
+         ano %in% c(2018, 2019, 2021, 2022)) |> 
   group_by(ano, uf_sigla) |> 
   summarise(total = sum(qtd_ies_cursos), .groups = "drop")
 
@@ -132,13 +159,16 @@ qtd_IES <-
 a <- ggplot(qtd_IES, aes(x = uf_sigla, y = total, fill = factor(ano))) + 
   geom_col(position = "dodge") +
   geom_text(aes(label = total), position = position_dodge(width = 0.9), vjust = -0.5, size = 5) +
-  ggtitle("Comparação de Vagas em Medicina nos Estados do Sul do Brasil",
+  ggtitle("Comparação",
           "Fonte: Censo da Educação Superior") +
   labs(x = "Estado", 
-       y = "Total de Vagas de Medicina", 
+       y = "Total", 
        fill = "Ano") +
   theme_minimal() +
-  scale_x_discrete(labels = c("GO" = "Goiás", "DF" = "Distrito Federal", "MS" = "Mato Grosso do Sul", "MT" = "Mato Grosso")) +
+  scale_x_discrete(labels = c("GO" = "Goiás", 
+                              "DF" = "Distrito Federal", 
+                              "MS" = "Mato Grosso do Sul", 
+                              "MT" = "Mato Grosso")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"), 
     plot.subtitle = element_text(size = 16),

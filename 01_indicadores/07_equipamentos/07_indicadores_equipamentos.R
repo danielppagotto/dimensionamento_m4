@@ -8,7 +8,9 @@ library(ggrepel)
 library(ggspatial) 
 
 
+
 # Leitura dos dados -------------------------------------------------------
+
 
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
@@ -28,6 +30,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Infraestrutura."Razão de equipamentos por população"'
 
 
@@ -36,7 +39,9 @@ equipamentos <- sqlQuery(channel,
                          as.is = TRUE)
 
 
+
 # tratamento dos dados ----------------------------------------------------
+
 
 equipamentos$soma_populacao <- as.integer(equipamentos$soma_populacao)
 equipamentos$soma_quantidade_equip_n_sus <- as.integer(equipamentos$soma_quantidade_equip_n_sus)
@@ -54,17 +59,19 @@ equip_mc_goias <-
     mutate(Macrorregião = substr(macrorregiao, 13, 27))
 
 
+
 # Criação do Gráfico ------------------------------------------------------
+
 
 a <- equip_mc_goias |> 
   ggplot(aes(x = ano, y = razao, col = Macrorregião)) + 
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("Razão de equipamentos por 10 mil habitantes") +
+  ylab("Razão (total de equipamentos por 10.000 habitantes)") +
   labs(caption = "* foram considerados os seguintes aparelhos: raio-x, tomógrafo, mamógrafo e ressonância") +
-  ggtitle("Evolução da razão de equipamentos* por população em macrorregiões de saúde em Goiás",
-          "Fonte: CNES-Equipamentos, competência de janeiro de cada ano") +
+  ggtitle("Evolução da Razão de Equipamentos* por População em Macrorregiões de Saúde em Goiás",
+          "Fonte: CNES-Equipamentos, competência de janeiro de cada ano, população de acordo com projeções SVSA") +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     plot.subtitle = element_text(size = 18),
@@ -76,7 +83,11 @@ a <- equip_mc_goias |>
   ) +
   scale_x_continuous(breaks = seq(min(equip_mc_goias$ano), max(equip_mc_goias$ano), by = 1)) 
 
+
 a
+
 
 ggsave(filename = "razao_equipamentos.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
+
+
