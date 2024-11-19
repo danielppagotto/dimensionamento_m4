@@ -28,6 +28,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer"."Epidemiológico".Mortalidade."Taxa de mortalidade por homicídios"'
 
 
@@ -46,7 +47,7 @@ mortalidade <-
   homicidios |> 
   drop_na() |> 
   filter(ano == "2023") |> 
-  group_by(ano, uf_sigla) |> 
+  group_by(ano, regiao) |> 
   summarise(
     pop = sum(populacao, na.rm = TRUE),
     obitos = sum(obitos_ano_homicidio, na.rm = TRUE)) |> 
@@ -55,27 +56,30 @@ mortalidade <-
 
 # Criação do Gráfico ------------------------------------------------------
 
-a <- mortalidade %>%
-  ggplot(aes(x = "", y = razao, fill = Região, label = sprintf("%.1f%%", razao))) +
-  geom_bar(stat = "identity", width = 2, color = "black", size = 1) +
-  coord_polar(theta = "y") +  # Faz o gráfico circular (pizza)
-  ggtitle("Distribuição da Taxa de Homicídios por Região em 2023", 
+a <- mortalidade |> 
+  ggplot(aes(x = fct_reorder(regiao, razao), y = razao, fill = regiao)) +
+  geom_col(position = "dodge") +  
+  coord_flip() +
+  geom_text(aes(label = round(razao, 2)),    
+            position = position_dodge(width = 0.9), 
+            hjust = -0.1, size = 5) + 
+  ggtitle("Distribuição da Taxa de Homicídios por Região do Brasil em 2023", 
           "Fonte: Sistema de Informação sobre Mortalidade (SIM)") +
-  labs(fill = "Região") +
-  geom_text(aes(label = sprintf("%.1f%%", razao)), position = position_stack(vjust = 0.5), size = 7) +
-  theme_void() +
-  theme(
-    legend.position = "right",
-    legend.box.margin = margin(0, 10, 0, -20),
-    legend.margin = margin(0, 0, -10, -10),
-    plot.margin = margin(-1.5, 1, -1.5, 1, "mm"),
-    legend.title = element_text(size = 16),
-    legend.text = element_text(size = 14),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 18))
+  labs(x = "Região",
+       y = "Taxa de homcídios (por 100.000 habitantes)",
+       fill = "Região") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size = 18),
+        axis.title = element_text(size = 20),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16),
+        legend.position = "top", 
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 14))
 
 a
 
-ggsave(filename = "homicidios.jpeg", plot = a,
+ggsave(filename = "taxa_homicidios.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
 
