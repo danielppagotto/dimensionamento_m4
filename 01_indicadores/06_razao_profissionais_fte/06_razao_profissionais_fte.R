@@ -65,7 +65,7 @@ a <- fte_40 |>
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("FTE 40 (carga horária total por 40 horas trabalhadas)") + 
+  ylab("Número de profissionais em FTE") + 
   ggtitle("Evolução da Métrica FTE de Enfermeiros nas Capitais do Nordeste",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano") +
   scale_color_discrete(name = "Capital", 
