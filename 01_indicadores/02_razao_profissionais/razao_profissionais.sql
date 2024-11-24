@@ -1,5 +1,3 @@
--- razao de profissionais por populacao 
-
 WITH 
 CNES_TRATADO     
     AS( 
@@ -113,8 +111,7 @@ SELECT
     A.categoria, 
     A.total,
     C.populacao,
-    (CAST(A.total AS FLOAT) / CAST(C.populacao AS FLOAT)) * 1000 AS taxa_populacao,
-    (CAST(D.FTE_40 AS FLOAT) / CAST(C.populacao AS FLOAT)) * 1000 AS taxa_FTE
+    (CAST(A.total AS FLOAT) / CAST(C.populacao AS FLOAT)) * 10000 AS taxa_populacao
 FROM CONTAGEM A
 LEFT JOIN 
     "Open Analytics Layer".Territorial."Hierarquia completa dos municípios" B
@@ -122,6 +119,3 @@ LEFT JOIN
 LEFT JOIN 
     "Open Analytics Layer".Territorial."População SVS por município e ano" C
     ON A.cod_ibge = C.cod_ibge AND A.ano = C.ano
-LEFT JOIN
-    "Open Analytics Layer".Profissionais."Razão de profissionais por população segundo padronização de FTE" D
-    ON A.cod_ibge = D.cod_ibge AND A.ano = D.ano AND A.categoria = D.categoria
