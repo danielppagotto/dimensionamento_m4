@@ -70,7 +70,7 @@ a <- equip_mc_goias |>
   xlab("Ano") +
   ylab("Razão (total de equipamentos por 10.000 habitantes)") +
   labs(caption = "* foram considerados os seguintes aparelhos: raio-x, tomógrafo, mamógrafo e ressonância") +
-  ggtitle("Evolução da Razão de Equipamentos* por População em Macrorregiões de Saúde em Goiás",
+  ggtitle("Evolução da razão de equipamentos* por população em macrorregiões de saúde em Goiás",
           "Fonte: CNES-Equipamentos, competência de janeiro de cada ano, população de acordo com projeções SVSA") +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
