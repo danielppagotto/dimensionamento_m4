@@ -68,7 +68,7 @@ a <-
   geom_text(aes(label = round(razao, 2)),    
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 5) + 
-  ggtitle("Comparação da Razão de Agentes Comunitários da Saúde por População nas Regiões do Brasil",
+  ggtitle("Comparação da razão de agentes comunitários da saúde por população nas regiões do Brasil",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   labs(x = "Região",
        y = "Razão (total de ACS por 10.000 habitantes)",
