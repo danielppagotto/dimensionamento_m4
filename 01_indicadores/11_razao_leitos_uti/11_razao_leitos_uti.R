@@ -79,11 +79,11 @@ a <- leitos_goias_long |>
   theme_minimal() + 
   xlab("Ano") +
   ylab("Razão (total de leitos de UTI por 10.000 habitantes)") +
-  ggtitle("Evolução da Razão de Leitos de UTI por População em Goiás",
+  ggtitle("Evolução da razão de leitos de UTI por população em Goiás",
           "Fonte: CNES-Leitos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   scale_color_discrete(
     name = "Tipo",
-    labels = c("UTI" = "Leitos de UTI", "UTIP" = "Leitos de UTI Pediátrica", "UTIN" = "Leitos de UTI Neonatal")  # Alterando apenas os rótulos
+    labels = c("UTI" = "Leitos de UTI", "UTIP" = "Leitos de UTI Pediátrica", "UTIN" = "Leitos de UTI Neonatal")
   ) +  
   theme(
     plot.title = element_text(size = 20, face = "bold"),
