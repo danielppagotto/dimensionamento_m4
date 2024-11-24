@@ -95,7 +95,7 @@ scale_fill_gradientn(colors = c("#FAE9A0", "#B6960D", "#796409"),
                          style = north_arrow_fancy_orienteering()) +
   annotation_scale(location = "bl",  
                    width_hint = 0.3)  +
-  ggtitle("Número Médio de Vínculos de Médicos no Rio Grande do Sul",
+  ggtitle("Número médio de vínculos de médicos no Rio Grande do Sul",
           "Fonte: CNES-Profissionais, competência de janeiro de 2024")
 
 
