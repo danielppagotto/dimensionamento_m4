@@ -107,7 +107,7 @@ a <- ggplot() +
                          style = north_arrow_fancy_orienteering()) +
   annotation_scale(location = "bl",  
                    width_hint = 0.3)  +
-  ggtitle("Precarização de Vínculos de Enfermagem na Atenção Primária à Saúde",
+  ggtitle("Precarização de vínculos de enfermagem na atenção primária à saúde",
           "Fonte: CNES-Profissionais, competência de janeiro de 2024")
 
 
