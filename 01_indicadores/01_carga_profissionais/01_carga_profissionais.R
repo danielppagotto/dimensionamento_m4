@@ -58,7 +58,7 @@ carga_horaria <-
 a <- 
   ggplot(carga_horaria, aes(x = categoria, y = MEDIA_PROF, fill = categoria)) +
   geom_boxplot() + 
-  ggtitle("Distribuição da Carga Horária de Profissionais da Saúde no Mato Grosso do Sul em 2024",
+  ggtitle("Distribuição da carga horária de profissionais da saúde no Mato Grosso do Sul em 2024",
           "Fonte: CNES-Profissionais, competência de janeiro de 2024") +
   labs(x = "Categoria profissional",
        y = "Carga horária") +
