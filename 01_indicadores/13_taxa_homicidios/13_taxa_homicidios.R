@@ -70,7 +70,7 @@ a <- mortalidade |>
   geom_text(aes(label = round(razao, 2)),    
             position = position_dodge(width = 0.9), 
             hjust = -0.1, size = 5) + 
-  ggtitle("Distribuição da Taxa de Homicídios por Região do Brasil em 2023", 
+  ggtitle("Distribuição da taxa de homicídios por região do Brasil em 2023", 
           "Fonte: Sistema de Informação sobre Mortalidade (SIM)") +
   labs(x = "Região",
        y = "Taxa de homicídios (total de óbitos por 100.000 habitantes)",
