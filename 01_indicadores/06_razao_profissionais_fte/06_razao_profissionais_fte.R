@@ -61,12 +61,12 @@ fte_40 <- fte |>
 
 
 a <- fte_40 |> 
-  ggplot(aes(x = ano, y = FTE_40, color = factor(cod_ibge), group = cod_ibge)) +  # Usando 'cod_ibge' para distinguir as linhas
+  ggplot(aes(x = ano, y = FTE_40, color = factor(cod_ibge), group = cod_ibge)) +
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
   ylab("Número de profissionais em FTE") + 
-  ggtitle("Evolução da Métrica FTE de Enfermeiros nas Capitais do Nordeste",
+  ggtitle("Evolução da métrica FTE de enfermeiros nas capitais do Nordeste",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano") +
   scale_color_discrete(name = "Capital", 
                        labels = c("292740" = "Salvador (BA)", 
@@ -77,7 +77,7 @@ a <- fte_40 |>
                                   "221100" = "Teresina (PI)", 
                                   "240810" = "Natal (RN)", 
                                   "280030" = "Aracaju (SE)", 
-                                  "270430" = "Maceió (AL)")) +  # Personalizando os rótulos da legenda
+                                  "270430" = "Maceió (AL)")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     plot.subtitle = element_text(size = 18),
