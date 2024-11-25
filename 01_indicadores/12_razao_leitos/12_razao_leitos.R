@@ -67,6 +67,7 @@ razao_leitos <-
 razao_leitos <- razao_leitos |> 
   mutate(regiao = factor(regiao, levels = rev(razao_leitos$regiao[order(razao_leitos$razao_sus)])))
 
+
 a <- razao_leitos |> 
   ggplot(aes(x = regiao, y = razao_sus, fill = regiao)) +
   geom_col(position = "dodge") +  
