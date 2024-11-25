@@ -18,7 +18,7 @@ SELECT
     SUM(lt.QT_NSUS) AS quantidade_nao_sus,
     SUM(lt.QT_SUS) + SUM(lt.QT_NSUS) AS qt_total,
     C.populacao,
-    CAST(SUM(lt.QT_SUS) + SUM(lt.QT_NSUS) AS FLOAT) / CAST(C.populacao AS FLOAT) * 1000 AS qt_total_populacao
+    CAST(SUM(lt.QT_SUS) + SUM(lt.QT_NSUS) AS FLOAT) / CAST(C.populacao AS FLOAT) * 10000 AS qt_total_populacao
 FROM
     Dados.cnes.LT lt 
 LEFT JOIN 
@@ -41,4 +41,4 @@ GROUP BY
     m.municipio,
     m.latitude,
     m.longitude,
-    C.populacao;
+    C.populacao
