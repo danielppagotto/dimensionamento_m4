@@ -46,7 +46,6 @@ leitos <- sqlQuery(channel,
 
 leitos$populacao <- as.integer(leitos$populacao)
 leitos$quantidade_sus <- as.integer(leitos$quantidade_sus)
-leitos$quantidade_nao_sus <- as.integer(leitos$quantidade_nao_sus)
 
 
 razao_leitos <- 
@@ -55,41 +54,37 @@ razao_leitos <-
   group_by(ano, regiao) |> 
   summarise(
     qtd_sus = sum(quantidade_sus),
-    qtd_nsus = sum(quantidade_nao_sus),
     pop = sum(populacao)) |>
   mutate(razao_sus = 10000 * (qtd_sus)/pop) |>
-  mutate(razao_nsus = 10000 * (qtd_nsus)/pop) |> 
-  drop_na()
-
-
-razao_leitos_long <- razao_leitos |> 
-  pivot_longer(cols = c(razao_sus, razao_nsus), names_to = "tipo", values_to = "razao")
+  drop_na() |>
+  mutate(regiao = str_replace(regiao, "Região ", ""))
 
 
 
 # Criação do Gráfico ------------------------------------------------------
 
 
-a <- razao_leitos_long |> 
-  ggplot(aes(x = regiao, y = razao, fill = tipo)) +
+razao_leitos <- razao_leitos |> 
+  mutate(regiao = factor(regiao, levels = rev(razao_leitos$regiao[order(razao_leitos$razao_sus)])))
+
+a <- razao_leitos |> 
+  ggplot(aes(x = regiao, y = razao_sus, fill = regiao)) +
   geom_col(position = "dodge") +  
-  geom_text(aes(label = round(razao, 2)),    
+  geom_text(aes(label = round(razao_sus, 2)),    
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 5) + 
-  ggtitle("Comparação da Razão de Leitos SUS e Não SUS por População nas Regiões do Brasil em 2024",
+  ggtitle("Razão de leitos do SUS por população nas regiões do Brasil em 2024",
           "Fonte: CNES-Leitos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   labs(x = "Região",
        y = "Razão (total de leitos por 10.000 habitantes)",
-       fill = "Tipo") +
-  scale_fill_manual(values = c("razao_sus" = "#42B7B9", "razao_nsus" = "#D691C1"),
-                    labels = c("razao_sus" = "SUS", "razao_nsus" = "Não SUS")) +
+       fill = "Região") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
         plot.subtitle = element_text(size = 18),
         axis.title = element_text(size = 20),
-        axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
+        axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
-        legend.position = "top", 
+        legend.position = "none", 
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 14))
 
