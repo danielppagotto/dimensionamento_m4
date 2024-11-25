@@ -46,7 +46,8 @@ remuneracao <- sqlQuery(channel,
 
 remuneracao_media <- 
   remuneracao |> 
-  filter(uf_sigla == "MG") |>
+  filter(uf_sigla == "MG",
+         categoria %in% c("Enfermeiro", "Farmacêutico", "Fisioterapeuta", "Dentista", "Nutricionista")) |>
   group_by(ano, categoria) |> 
   summarise(media_rendimento = mean(rendimento_medio, na.rm = TRUE))
 
@@ -61,7 +62,7 @@ a <- remuneracao_media |>
   theme_minimal() + 
   xlab("Ano") +
   ylab("Média de remuneração") +
-  ggtitle("Evolução da Remuneração Média de Profissionais da Saúde em Minas Gerais",
+  ggtitle("Evolução da remuneração média de profissionais da saúde em Minas Gerais",
           "Fonte: Pesquisa Nacional por Amostra de Domicílios Contínua (PNADc)") +
   labs(color = "Categoria profissional") +
   theme(
