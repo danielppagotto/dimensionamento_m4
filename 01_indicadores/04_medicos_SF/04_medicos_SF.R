@@ -66,7 +66,7 @@ a <- medicos_familia |>
   theme_minimal() + 
   xlab("Ano") +
   ylab("Razão (total de médicos da família por 10.000 habitantes)") +
-  ggtitle("Evolução da Razão de Médicos da Família por População em Macrorregiões de Saúde na Bahia",
+  ggtitle("Evolução da razão de médicos da família por população em macrorregiões de saúde na Bahia",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
@@ -77,7 +77,8 @@ a <- medicos_familia |>
     legend.text = element_text(size = 14),
     plot.caption = element_text(size = 14, hjust = 0, color = "grey30")
   ) +
-  scale_x_continuous(breaks = seq(min(medicos_familia$ano), max(medicos_familia$ano), by = 1)) 
+  scale_x_continuous(breaks = seq(min(medicos_familia$ano), max(medicos_familia$ano), by = 1)) +
+  labs(color = "Macrorregião")
 
 
 a
