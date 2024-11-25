@@ -63,7 +63,7 @@ a <- ggplot(qtd_IES, aes(x = uf_sigla, y = total, fill = factor(ano))) +
   geom_col(position = "dodge") +
   geom_text(aes(label = total), position = position_dodge(width = 0.9), vjust = -0.5, size = 5) +
   ggtitle("Comparação da quantidade de instituições de ensino superior que possuem cursos de saúde nas capitais do Norte do Brasil",
-          "Fonte: Censo da Educação Superior") +
+          "Fonte: Censo da Educação Superior - INEP") +
   labs(x = "Capital", 
        y = "Total", 
        fill = "Ano") +

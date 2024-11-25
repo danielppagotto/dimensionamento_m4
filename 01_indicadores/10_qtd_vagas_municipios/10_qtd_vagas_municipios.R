@@ -62,8 +62,8 @@ educacao_vagas <- educacao |>
 a <- ggplot(educacao_vagas, aes(x = uf_sigla, y = total_vagas, fill = factor(ano))) + 
   geom_col(position = "dodge") +
   geom_text(aes(label = total_vagas), position = position_dodge(width = 0.9), vjust = -0.5, size = 5) +
-  ggtitle("Comparação do Número de Vagas no Curso de Medicina nos Estados do Sul do Brasil",
-          "Fonte: Censo da Educação Superior") +
+  ggtitle("Comparação do número de vagas no curso de medicina nos estados do Sul do Brasil",
+          "Fonte: Censo da Educação Superior - INEP") +
   labs(x = "Estado", 
        y = "Total de vagas de medicina", 
        fill = "Ano") +
