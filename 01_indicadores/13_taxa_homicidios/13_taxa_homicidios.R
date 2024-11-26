@@ -39,11 +39,28 @@ homicidios <- sqlQuery(channel,
                          as.is = TRUE)
 
 
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
+
 
 # tratamento dos dados ----------------------------------------------------
 
 
-homicidios$populacao <- as.integer(homicidios$populacao)
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao <- 
+  populacao |>
+  filter (ano == '2023') |> 
+  group_by(ano, regiao) |>
+  summarise(pop = sum(populacao))
+
+
+homicidios$ano <- as.integer(homicidios$ano)
 homicidios$obitos_ano_homicidio <- as.integer(homicidios$obitos_ano_homicidio)
 homicidios$taxa_homicidios_por_populacao <- as.numeric(homicidios$taxa_homicidios_por_populacao)
 
@@ -53,17 +70,21 @@ mortalidade <-
   drop_na() |> 
   filter(ano == "2023") |> 
   group_by(ano, regiao) |> 
-  summarise(
-    pop = sum(populacao, na.rm = TRUE),
-    obitos = sum(obitos_ano_homicidio, na.rm = TRUE)) |> 
-  mutate(razao = 100000 * obitos / pop)
+  summarise(obitos = sum(obitos_ano_homicidio, na.rm = TRUE))
+
+mortalidade_pop <-
+  mortalidade |>
+  left_join(populacao, by = c("ano", "regiao")) |>
+  mutate(razao = 100000 * obitos / pop) |>
+  drop_na() |>
+  mutate(regiao = str_replace(regiao, "Região ", ""))
 
 
 
 # Criação do Gráfico ------------------------------------------------------
 
 
-a <- mortalidade |> 
+a <- mortalidade_pop |> 
   ggplot(aes(x = fct_reorder(regiao, razao), y = razao, fill = regiao)) +
   geom_col(position = "dodge") +  
   coord_flip() +
@@ -81,7 +102,7 @@ a <- mortalidade |>
         axis.title = element_text(size = 20),
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
-        legend.position = "top", 
+        legend.position = "none", 
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 14))
 
