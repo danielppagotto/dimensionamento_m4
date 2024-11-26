@@ -39,20 +39,42 @@ medicos <- sqlQuery(channel,
                          as.is = TRUE)
 
 
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
+
+
 
 # tratamento dos dados ----------------------------------------------------
 
 
-medicos$populacao <- as.integer(medicos$populacao)
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao <- 
+  populacao |>
+  filter(uf_sigla == "BA") |>
+  group_by(ano, macrorregiao) |>
+  summarise(pop = sum(populacao))
+
+
+medicos$ano <- as.integer(medicos$ano)
 medicos$qtd_distinta_cpf_cbo <- as.integer(medicos$qtd_distinta_cpf_cbo)
 
 
 medicos_familia <- 
   medicos |> 
   filter(uf_sigla == "BA") |> 
-  group_by(ano,macrorregiao) |> 
-  summarise(pop = sum(populacao),
-            qtd_medicos = sum(qtd_distinta_cpf_cbo)) |> 
+  group_by(ano, macrorregiao) |> 
+  summarise(qtd_medicos = sum(qtd_distinta_cpf_cbo))
+
+
+medicos_pop <-
+  medicos_familia |> 
+  left_join(populacao, by = c("ano", "macrorregiao")) |> 
   mutate(razao = 10000 * (qtd_medicos)/pop)
 
 
@@ -60,8 +82,8 @@ medicos_familia <-
 # Criação do Gráfico ------------------------------------------------------
 
 
-a <- medicos_familia |> 
-  ggplot(aes(x = as.numeric(ano), y = razao, col = macrorregiao)) + 
+a <- medicos_pop |> 
+  ggplot(aes(x = ano, y = razao, col = macrorregiao)) + 
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
