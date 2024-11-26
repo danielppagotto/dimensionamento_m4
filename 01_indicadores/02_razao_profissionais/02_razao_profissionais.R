@@ -40,21 +40,43 @@ profissionais <- sqlQuery(channel,
                          as.is = TRUE)
 
 
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
+
+
 
 # tratamento dos dados ----------------------------------------------------
 
 
-profissionais$populacao <- as.integer(profissionais$populacao)
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao <- 
+  populacao |>
+  filter(ano %in% c(2014, 2024)) |>
+  group_by(ano, regiao) |>
+  summarise(pop = sum(populacao))
+
+
+profissionais$ano <- as.integer(profissionais$ano)
 profissionais$total <- as.integer(profissionais$total)
 
 
-profissionaiss <- 
+profissionais <- 
   profissionais |> 
   filter(ano %in% c(2014, 2024),
          categoria == "Agente Comunitário de Saúde") |>
   group_by(ano, regiao) |> 
-  summarise(pop = sum(populacao),
-            total = sum(total)) |> 
+  summarise(total = sum(total)) 
+
+
+prof_pop <-
+  profissionais  |> 
+  left_join(populacao, by = c("ano", "regiao")) |>
   mutate(razao = 10000 * (total)/pop)
 
 
@@ -63,7 +85,7 @@ profissionaiss <-
 
 
 a <- 
-  ggplot(profissionaiss, aes(x = regiao, y = razao, fill = factor(ano))) +
+  ggplot(prof_pop, aes(x = regiao, y = razao, fill = factor(ano))) +
   geom_col(position = "dodge") +  
   geom_text(aes(label = round(razao, 2)),    
             position = position_dodge(width = 0.9), 
