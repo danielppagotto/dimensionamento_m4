@@ -40,11 +40,29 @@ leitos <- sqlQuery(channel,
                    as.is = TRUE)
 
 
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
+
+
 
 # tratamento dos dados ----------------------------------------------------
 
 
-leitos$populacao <- as.integer(leitos$populacao)
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao_go <- 
+  populacao |>
+  filter(uf_sigla == "GO") |>
+  group_by(ano) |>
+  summarise(pop = sum(populacao))
+
+
+leitos$ano <- as.integer(leitos$ano)
 leitos$qtd_UTI <- as.integer(leitos$qtd_UTI)
 leitos$qtd_UTIP <- as.integer(leitos$qtd_UTIP)
 leitos$qtd_UTIN <- as.integer(leitos$qtd_UTIN)
@@ -53,17 +71,21 @@ leitos$qtd_UTIN <- as.integer(leitos$qtd_UTIN)
 leitos_goias <- 
   leitos |> 
   filter(uf_sigla == "GO") |> 
-  group_by(ano, uf_sigla) |> 
-  summarise(pop = sum(populacao),
-            qtd_UTI = sum(qtd_UTI),
+  group_by(ano)  |> 
+  summarise(qtd_UTI = sum(qtd_UTI),
             qtd_UTIP = sum(qtd_UTIP),
-            qtd_UTIN = sum(qtd_UTIN)) |> 
+            qtd_UTIN = sum(qtd_UTIN))
+
+
+leitos_com_populacao <-
+  leitos_goias |>
+  left_join(populacao_go, by = "ano") |>
   mutate(UTI = 10000 * (qtd_UTI/pop)) |> 
   mutate(UTIP = 10000 * (qtd_UTIP/pop)) |> 
   mutate(UTIN = 10000 * (qtd_UTIN/pop)) 
 
 
-leitos_goias_long <- leitos_goias |> 
+leitos_goias_long <- leitos_com_populacao |> 
   pivot_longer(cols = c(UTI, UTIP, UTIN), 
                names_to = "tipo_uti", 
                values_to = "valor_uti")
@@ -93,7 +115,8 @@ a <- leitos_goias_long |>
     legend.title = element_text(size = 16),
     legend.text = element_text(size = 14),
     plot.caption = element_text(size = 14, hjust = 0, color = "grey30")
-  )
+  ) +
+  scale_x_continuous(breaks = seq(min(leitos_goias_long$ano), max(leitos_goias_long$ano), by = 1))
 
 
 a
