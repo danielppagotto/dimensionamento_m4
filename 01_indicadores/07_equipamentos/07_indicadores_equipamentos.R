@@ -39,10 +39,29 @@ equipamentos <- sqlQuery(channel,
                          as.is = TRUE)
 
 
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
+
+
 
 # tratamento dos dados ----------------------------------------------------
 
 
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao <- 
+  populacao |>
+  filter(uf_sigla == "GO") |>
+  group_by(ano, macrorregiao) |>
+  summarise(pop = sum(populacao))
+
+
+equipamentos$ano <- as.integer(equipamentos$ano)
 equipamentos$soma_populacao <- as.integer(equipamentos$soma_populacao)
 equipamentos$soma_quantidade_equip_n_sus <- as.integer(equipamentos$soma_quantidade_equip_n_sus)
 equipamentos$soma_quantidade_equip_sus <- as.integer(equipamentos$soma_quantidade_equip_sus)
@@ -52,18 +71,22 @@ equip_mc_goias <-
   equipamentos |> 
     filter(uf_sigla == "GO") |> 
     group_by(ano,macrorregiao) |> 
-    summarise(pop = sum(soma_populacao),
-              equipamentos_sus = sum(soma_quantidade_equip_sus),
-              equipamentos_nsus = sum(soma_quantidade_equip_n_sus)) |> 
-    mutate(razao = 10000 * (equipamentos_sus + equipamentos_nsus)/pop) |> 
-    mutate(Macrorregião = substr(macrorregiao, 13, 27))
+    summarise(equipamentos_sus = sum(soma_quantidade_equip_sus),
+              equipamentos_nsus = sum(soma_quantidade_equip_n_sus)) 
+
+
+equip_pop <-
+  equip_mc_goias |>
+  left_join(populacao, by = c("ano", "macrorregiao")) |>
+  mutate(razao = 10000 * (equipamentos_sus + equipamentos_nsus)/pop) |> 
+  mutate(Macrorregião = substr(macrorregiao, 13, 27))
 
 
 
 # Criação do Gráfico ------------------------------------------------------
 
 
-a <- equip_mc_goias |> 
+a <- equip_pop |> 
   ggplot(aes(x = ano, y = razao, col = Macrorregião)) + 
   geom_line(size = 1.5) + 
   theme_minimal() + 
