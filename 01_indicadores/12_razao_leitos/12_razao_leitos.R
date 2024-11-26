@@ -40,11 +40,29 @@ leitos <- sqlQuery(channel,
                   as.is = TRUE)
 
 
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
+
+
 
 # tratamento dos dados ----------------------------------------------------
 
 
-leitos$populacao <- as.integer(leitos$populacao)
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao <- 
+  populacao |>
+  filter (ano == '2024') |> 
+  group_by(ano, regiao) |>
+  summarise(pop = sum(populacao))
+
+
+leitos$ano <- as.integer(leitos$ano)
 leitos$quantidade_sus <- as.integer(leitos$quantidade_sus)
 
 
@@ -52,20 +70,23 @@ razao_leitos <-
   leitos |> 
   filter (ano == '2024') |> 
   group_by(ano, regiao) |> 
-  summarise(
-    qtd_sus = sum(quantidade_sus),
-    pop = sum(populacao)) |>
+  summarise(qtd_sus = sum(quantidade_sus)) 
+
+
+leitos_pop <-
+  razao_leitos |>
+  left_join(populacao, by = c("ano", "regiao")) |>
   mutate(razao_sus = 10000 * (qtd_sus)/pop) |>
   drop_na() |>
   mutate(regiao = str_replace(regiao, "Região ", ""))
 
 
+razao_leitos <- leitos_pop |> 
+  mutate(regiao = factor(regiao, levels = rev(leitos_pop$regiao[order(leitos_pop$razao_sus)])))
+
+
 
 # Criação do Gráfico ------------------------------------------------------
-
-
-razao_leitos <- razao_leitos |> 
-  mutate(regiao = factor(regiao, levels = rev(razao_leitos$regiao[order(razao_leitos$razao_sus)])))
 
 
 a <- razao_leitos |> 
