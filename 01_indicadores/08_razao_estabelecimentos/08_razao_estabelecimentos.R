@@ -134,7 +134,7 @@ a <- estab_pop_summary |>
 a
 
 
-ggsave(filename = "precarizacao.jpeg", plot = a,
+ggsave(filename = "estabelecimentos.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
 
 
