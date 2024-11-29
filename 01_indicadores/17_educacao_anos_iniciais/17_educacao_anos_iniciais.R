@@ -80,7 +80,7 @@ a <- ggplot() +
                        breaks = c(0, 5, 10)) + 
   theme_minimal() +
   labs(fill = "Média do IDEB", 
-       title = "Qualidade da educação de escolas municipais nos anos iniciais do ensino fundamental em Goiás",
+       title = "Qualidade da educação de escolas municipais nos anos iniciais do\nensino fundamental em Goiás",
        subtitle = "Fonte: Índice de Desenvolvimento da Educação Básica - INEP, competência de 2023") +
   theme(legend.position = "bottom",
         legend.justification = "center",
