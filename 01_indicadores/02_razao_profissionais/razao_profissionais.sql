@@ -2,11 +2,11 @@ WITH
 CNES_TRATADO     
     AS( 
         SELECT 
-            substr(pf.COMPETEN, 1, 4) AS ano,
+            substr(PF.COMPETEN, 1, 4) AS ano,
             CASE
-                WHEN LENGTH(pf.codufmun) = 7 THEN SUBSTR(pf.codufmun, 1, 6)
-                WHEN pf.codufmun LIKE '53%' THEN '530010' 
-                ELSE pf.codufmun
+                WHEN LENGTH(PF.codufmun) = 7 THEN SUBSTR(PF.codufmun, 1, 6)
+                WHEN PF.codufmun LIKE '53%' THEN '530010' 
+                ELSE PF.codufmun
             END AS cod_ibge,
             PF.uf, 
             PF.CPF_PROF,
