@@ -1,4 +1,5 @@
 
+library(dplyr)
 library(tidyverse)
 library(RODBC)
 library(geobr)
@@ -31,7 +32,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Distribuição dos tipos de vínculos de profissionais"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Proporção de vínculos precarizados entre profissionais de saúde"'
 
 
 precarizacao <- sqlQuery(channel, 
@@ -98,10 +99,11 @@ a <- ggplot() +
   theme(legend.position = "bottom",
         legend.justification = "center",
         legend.box = "horizontal",
-        axis.text.x = element_text(size = 18),  
-        axis.text.y = element_text(size = 18),
+        axis.text.x = element_text(size = 16),  
+        axis.text.y = element_text(size = 16),
         legend.text = element_text(size = 18),
-        plot.title = element_text(size = 20)) +
+        plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size = 18)) +
    annotation_north_arrow(location = "tr",  
                          which_north = "true",
                          style = north_arrow_fancy_orienteering()) +
