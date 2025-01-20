@@ -1,6 +1,3 @@
-
--- Indicador para calcular distribuicao de vinculos
-
 WITH
     CNES_VINC 
     AS (
