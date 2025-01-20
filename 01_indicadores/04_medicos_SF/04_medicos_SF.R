@@ -31,12 +31,12 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de médicos de medicina da família por população"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de médicos de saúde da família por população"'
 
 
 medicos <- sqlQuery(channel, 
-                         query,
-                         as.is = TRUE)
+                    query,
+                    as.is = TRUE)
 
 
 populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
@@ -88,7 +88,7 @@ a <- medicos_pop |>
   theme_minimal() + 
   xlab("Ano") +
   ylab("Razão (total de médicos da família por 10.000 habitantes)") +
-  ggtitle("Evolução da razão de médicos da família por população em macrorregiões de saúde na Bahia",
+  ggtitle("Evolução da razão de médicos de saúde da família por população em macrorregiões de saúde na Bahia",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
