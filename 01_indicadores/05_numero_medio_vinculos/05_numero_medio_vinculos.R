@@ -31,7 +31,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Número médio de vínculos"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Número médio de vínculos de profissionais de saúde"'
 
 
 vinculos <- sqlQuery(channel, 
@@ -53,7 +53,7 @@ mun <-
   read_municipality(code_muni="all", 
                          year=2022,
                          showProgress = FALSE) |>
-  filter(substr(code_muni, 1, 2) == "43") |>
+  filter(substr(code_muni, 1, 2) == "52") |>
   mutate(code_muni = as.character(code_muni)) |>
   mutate(code_muni = substr(code_muni, 1, 6))
 
@@ -86,16 +86,17 @@ scale_fill_gradientn(colors = c("#FAE9A0", "#B6960D", "#796409"),
   theme(legend.position = "bottom",
         legend.justification = "center",
         legend.box = "horizontal",
-        axis.text.x = element_text(size = 18),  
-        axis.text.y = element_text(size = 18),
+        axis.text.x = element_text(size = 16),  
+        axis.text.y = element_text(size = 16),
         legend.text = element_text(size = 18),
-        plot.title = element_text(size = 20)) +
+        plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size = 18)) +
   annotation_north_arrow(location = "tr",  
                          which_north = "true",
                          style = north_arrow_fancy_orienteering()) +
   annotation_scale(location = "bl",  
                    width_hint = 0.3)  +
-  ggtitle("Número médio de vínculos de médicos no Rio Grande do Sul",
+  ggtitle("Número médio de vínculos de médicos em Goiás",
           "Fonte: CNES-Profissionais, competência de janeiro de 2024")
 
 

@@ -32,7 +32,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de profissionais por população segundo padronização de FTE"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de profissionais por população segundo padronização de Full-time equivalent (FTE)"'
 
 
 fte <- sqlQuery(channel, 
