@@ -61,12 +61,12 @@ fte_40 <- fte |>
 
 
 a <- fte_40 |> 
-  ggplot(aes(x = ano, y = FTE_40, color = factor(cod_ibge), group = cod_ibge)) +
+  ggplot(aes(x = ano, y = FTE_populacao, color = factor(cod_ibge), group = cod_ibge)) +
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("Número de profissionais em FTE") + 
-  ggtitle("Evolução da métrica FTE de enfermeiros nas capitais do Nordeste",
+  ylab("Razão (profissionais em FTE por 10 mil habitantes)") + 
+  ggtitle("Evolução da razão entre a métrica FTE de enfermeiros na APS pela população em capitais do Nordeste",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano") +
   scale_color_discrete(name = "Capital", 
                        labels = c("292740" = "Salvador (BA)", 
