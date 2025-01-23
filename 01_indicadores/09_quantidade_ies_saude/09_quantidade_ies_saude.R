@@ -32,7 +32,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer"."Educação"."Quantidade de IES com cursos de saúde por município"'
+query <- 'SELECT * FROM "Open Analytics Layer"."Educação"."Quantidade de Instituições de Ensino Superior (IES) com cursos da área da saúde"'
 
 
 IES <- sqlQuery(channel, 
@@ -62,7 +62,7 @@ qtd_IES <-
 a <- ggplot(qtd_IES, aes(x = uf_sigla, y = total, fill = factor(ano))) + 
   geom_col(position = "dodge") +
   geom_text(aes(label = total), position = position_dodge(width = 0.9), vjust = -0.5, size = 5) +
-  ggtitle("Comparação da quantidade de instituições de ensino superior que possuem\ncursos de saúde nas capitais do Norte do Brasil",
+  ggtitle("Comparação da quantidade de Instituições de Ensino Superior (IES) que possuíam\ncursos da área da saúde nas capitais do Norte do Brasil",
           "Fonte: Censo da Educação Superior - INEP") +
   labs(x = "Capital", 
        y = "Total", 
@@ -77,7 +77,7 @@ a <- ggplot(qtd_IES, aes(x = uf_sigla, y = total, fill = factor(ano))) +
                               "TO"="Palmas")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"), 
-    plot.subtitle = element_text(size = 16),
+    plot.subtitle = element_text(size = 18),
     axis.title = element_text(size = 18),
     axis.title.x = element_text(size = 18, margin = margin(t = 20)),
     axis.title.y = element_text(size = 18, margin = margin(r = 20)),
