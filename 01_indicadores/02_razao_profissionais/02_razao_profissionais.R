@@ -36,8 +36,8 @@ query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de profissi
 
 
 profissionais <- sqlQuery(channel, 
-                         query,
-                         as.is = TRUE)
+                          query,
+                          as.is = TRUE)
 
 
 populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
@@ -90,7 +90,7 @@ a <-
   geom_text(aes(label = round(razao, 2)),    
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 5) + 
-  ggtitle("Comparação da razão de agentes comunitários da saúde por população nas regiões do Brasil",
+  ggtitle("Comparação da razão de agentes comunitários de saúde por população nas regiões do Brasil",
           "Fonte: CNES-Profissionais, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   labs(x = "Região",
        y = "Razão (profissionais por 10 mil habitantes)",
