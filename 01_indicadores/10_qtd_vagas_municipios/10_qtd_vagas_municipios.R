@@ -32,7 +32,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer"."Educação"."Quantidade de vagas, matriculados, concluintes e inscritos em curso superior por município"'
+query <- 'SELECT * FROM "Open Analytics Layer"."Educação"."Número de vagas, matriculados, concluintes, ingressantes e inscritos em curso superior"'
 
 
 educacao <- sqlQuery(channel, 
@@ -62,7 +62,7 @@ educacao_vagas <- educacao |>
 a <- ggplot(educacao_vagas, aes(x = uf_sigla, y = total_vagas, fill = factor(ano))) + 
   geom_col(position = "dodge") +
   geom_text(aes(label = total_vagas), position = position_dodge(width = 0.9), vjust = -0.5, size = 5) +
-  ggtitle("Comparação do número de vagas no curso de medicina nos estados do Sul do Brasil",
+  ggtitle("Comparação do número de vagas no curso de medicina nos estados da Região Sul do Brasil",
           "Fonte: Censo da Educação Superior - INEP") +
   labs(x = "Estado", 
        y = "Total de vagas de medicina", 
@@ -88,4 +88,5 @@ a
 
 ggsave(filename = "qtd_vagas_municipios.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
 
