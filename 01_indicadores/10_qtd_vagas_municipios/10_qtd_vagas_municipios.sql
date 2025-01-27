@@ -15,7 +15,7 @@ SELECT
     SUM(x.qt_ingresso_total) AS ingressos,
     SUM(x.qt_vaga_total) AS vagas,
     SUM(x.qt_inscrito_total) AS inscritos
-FROM "Open Analytics Layer"."Educação"."Quantidade de vagas, matriculados, concluintes e inscritos em curso superior por instituição de ensino" x
+FROM "Open Analytics Layer"."Educação"."Número de vagas, matriculados, concluintes, ingressantes e inscritos em curso superior" x
 GROUP BY 
        ano,
        regiao,
