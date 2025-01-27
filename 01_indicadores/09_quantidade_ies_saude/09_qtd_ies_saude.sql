@@ -12,7 +12,7 @@ SELECT
     a.longitude, 
     COUNT(DISTINCT co_ies) as qtd_ies_cursos,
     a.tp_categoria_administrativa
-FROM "Open Analytics Layer"."Educação"."Número de vagas, matriculados, concluintes, ingressantes e inscritos em curso superior" a
+FROM "Open Analytics Layer"."Educação"."Quantidade de vagas, matriculados, concluintes e inscritos em curso superior por instituição de ensino" a
 LEFT JOIN
     "Open Analytics Layer".Territorial."Hierarquia completa dos municípios" h
     ON a.cod_ibge = CAST(h.cod_municipio AS CHARACTER)
