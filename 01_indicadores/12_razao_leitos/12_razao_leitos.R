@@ -95,10 +95,10 @@ a <- razao_leitos |>
   geom_text(aes(label = round(razao_sus, 2)),    
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 5) + 
-  ggtitle("Razão de leitos do SUS por população nas regiões do Brasil em 2024",
-          "Fonte: CNES-Leitos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
+  ggtitle("Razão de leitos do SUS por população nas regiões do Brasil",
+          "Fonte: CNES-Leitos, competência de janeiro de 2024; população de acordo com projeções SVSA") +
   labs(x = "Região",
-       y = "Razão (total de leitos por 10.000 habitantes)",
+       y = "Razão (total de leitos por 10 mil habitantes)",
        fill = "Região") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
