@@ -100,7 +100,7 @@ a <- leitos_goias_long |>
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("Razão (total de leitos de UTI por 10.000 habitantes)") +
+  ylab("Razão (total de leitos de UTI por 10 mil habitantes)") +
   ggtitle("Evolução da razão de leitos de UTI por população em Goiás",
           "Fonte: CNES-Leitos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   scale_color_discrete(
