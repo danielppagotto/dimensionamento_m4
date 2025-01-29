@@ -35,8 +35,8 @@ query <- 'SELECT * FROM "Open Analytics Layer"."Epidemiológico".Mortalidade."Ta
 
 
 homicidios <- sqlQuery(channel, 
-                         query,
-                         as.is = TRUE)
+                       query,
+                       as.is = TRUE)
 
 
 populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
@@ -94,7 +94,7 @@ a <- mortalidade_pop |>
   ggtitle("Distribuição da taxa de homicídios por região do Brasil em 2023", 
           "Fonte: Sistema de Informação sobre Mortalidade (SIM)") +
   labs(x = "Região",
-       y = "Taxa de homicídios (total de óbitos por 100.000 habitantes)",
+       y = "Taxa de homicídios (óbitos por 100 mil habitantes)",
        fill = "Região") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
