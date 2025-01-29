@@ -72,7 +72,6 @@ CONTAGEM
             ano, 
             UF, 
             categoria 
-            
     )
 
 SELECT
