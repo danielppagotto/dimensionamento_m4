@@ -32,12 +32,12 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Remuneração média de profissionais por UF"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Remuneração média de profissionais de saúde"'
 
 
 remuneracao <- sqlQuery(channel, 
-                   query,
-                   as.is = TRUE)
+                        query,
+                        as.is = TRUE)
 
 
 
@@ -62,7 +62,7 @@ a <- remuneracao_media |>
   theme_minimal() + 
   xlab("Ano") +
   ylab("Média de remuneração") +
-  ggtitle("Evolução da remuneração média de profissionais da saúde em Minas Gerais",
+  ggtitle("Evolução da remuneração média de profissionais de saúde em Minas Gerais",
           "Fonte: Pesquisa Nacional por Amostra de Domicílios Contínua (PNADc)") +
   labs(color = "Categoria profissional") +
   theme(
