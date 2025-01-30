@@ -35,8 +35,8 @@ query <- 'SELECT * FROM "Open Analytics Layer".Infraestrutura."Razão de equipam
 
 
 equipamentos <- sqlQuery(channel, 
-                     query,
-                     as.is = TRUE)
+                         query,
+                         as.is = TRUE)
 
 
 populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
@@ -96,7 +96,7 @@ a <-
   ggtitle("Comparação da razão de equipamentos de odontologia por população nas\nmacrorregiões de saúde do Mato Grosso",
           "Fonte: CNES-Equipamentos, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   labs(x = "Macrorregião",
-       y = "Razão (total de equipamentos por 10.000 habitantes)",
+       y = "Razão (total de equipamentos por 10 mil habitantes)",
        fill = "Ano") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
@@ -114,4 +114,5 @@ a
 
 ggsave(filename = "razao_equip_odonto.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
 
