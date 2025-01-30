@@ -32,12 +32,12 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Percentual de força de trabalho habilitada atuando em estabelecimentos de saúde - análise por UF"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Percentual de força de trabalho habilitada atuando em estabelecimentos de saúde"'
 
 
 trabalho <- sqlQuery(channel, 
-                        query,
-                        as.is = TRUE)
+                     query,
+                     as.is = TRUE)
 
 
 
@@ -50,7 +50,7 @@ trabalho$habilitados <- as.integer(trabalho$habilitados)
 
 força_trabalho <- 
   trabalho |> 
-  filter(categoria == "Enfermeiros") |> 
+  filter(categoria == "Enfermeiros", uf %in% c("GO", "MS", "MT", "DF")) |> 
   group_by(uf) |>
   summarise(percentual = 100 * sum(atuantes) / sum(habilitados)) |> 
   drop_na()
@@ -64,9 +64,9 @@ a <- força_trabalho |>
   ggplot(aes(x = percentual, y = reorder(uf, percentual))) + 
   geom_col() +  # Troquei geom_line por geom_col para representar barras
   theme_minimal() + 
-  xlab("Percentual de enfermeiros atuantes em estabelecimentos em relação aos habilitados (%)") +
+  xlab("Percentual (%)") +
   ylab("UF") +
-  ggtitle("Percentual de enfermeiros atuantes em estabelecimentos de saúde em relação aos habilitados por UF",
+  ggtitle("Percentual de enfermeiros atuantes em estabelecimentos de saúde\nem relação aos habilitados por UF do Centro-Oeste",
           "Fonte: CNES-Profissionais e conselhos das profissões de saúde, competência de janeiro de 2024") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
