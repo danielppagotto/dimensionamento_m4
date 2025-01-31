@@ -69,10 +69,10 @@ equipamentos$soma_quantidade_equip_sus <- as.integer(equipamentos$soma_quantidad
 
 equip_mc_goias <- 
   equipamentos |> 
-    filter(uf_sigla == "GO") |> 
-    group_by(ano,macrorregiao) |> 
-    summarise(equipamentos_sus = sum(soma_quantidade_equip_sus),
-              equipamentos_nsus = sum(soma_quantidade_equip_n_sus)) 
+  filter(uf_sigla == "GO") |> 
+  group_by(ano,macrorregiao) |> 
+  summarise(equipamentos_sus = sum(soma_quantidade_equip_sus),
+            equipamentos_nsus = sum(soma_quantidade_equip_n_sus)) 
 
 
 equip_pop <-
@@ -91,7 +91,7 @@ a <- equip_pop |>
   geom_line(size = 1.5) + 
   theme_minimal() + 
   xlab("Ano") +
-  ylab("Razão (total de equipamentos por 10.000 habitantes)") +
+  ylab("Razão (total de equipamentos por 10 mil habitantes)") +
   labs(caption = "* foram considerados os seguintes aparelhos: raio-x, tomógrafo, mamógrafo e ressonância") +
   ggtitle("Evolução da razão de equipamentos* por população em macrorregiões de saúde em Goiás",
           "Fonte: CNES-Equipamentos, competência de janeiro de cada ano, população de acordo com projeções SVSA") +
