@@ -51,7 +51,7 @@ estados_br <- read_state(year = 2020,
                          showProgress = FALSE)
 
 spdf <- 
-  geojson_read("~/GitHub/dimensionamento_m4/BR_Regionais_Simplificado.geojson", 
+  geojson_read("~/GitHub/dimensionamento_m4/shape_file_regioes_saude.json", 
                what = "sp")
 
 spdf_fortified <- 
