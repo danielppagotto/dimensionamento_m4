@@ -103,7 +103,7 @@ a <-
                                 size = 1), 
     plot.margin = margin(10, 10, 10, 10)) +
   ggtitle("Distribuição das taxas de retenção de médicos agregadas por regiões de saúde do Brasil em 2024",
-          "Fonte: ???, competência de janeiro de 2024") 
+          "Fonte: CNES-Porfissionais, competência de janeiro de 2024") 
 
 
 a
