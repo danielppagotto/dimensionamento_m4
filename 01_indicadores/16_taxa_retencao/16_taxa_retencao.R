@@ -1,11 +1,15 @@
 
 library(tidyverse)
-library(RODBC)
+library(arrow)
+library(patchwork)
+library(geojsonio)
+library(geojsonsf)
 library(geobr)
 library(scales)
-library(sf) 
-library(ggrepel) 
 library(ggspatial) 
+library(sf)
+library(readxl)
+library(leaflet)
 
 
 
@@ -43,11 +47,24 @@ retencao <- sqlQuery(channel,
 # Tratamento dos dados -------------------------------------------------------
 
 
+estados_br <- read_state(year = 2020,
+                         showProgress = FALSE)
+
+spdf <- 
+  geojson_read("~/GitHub/dimensionamento_m4/BR_Regionais_Simplificado.geojson", 
+               what = "sp")
+
+spdf_fortified <- 
+  sf::st_as_sf(spdf)
+
+
 taxa_retencao <- 
   retencao |> 
   filter(ano == '2024',
-         categoria == "Enfermeiros") |> 
-  mutate(regiao = str_replace(regiao, "Região ", ""))
+         categoria == "Médicos") |> 
+  mutate(regiao = str_replace(regiao, "Região ", ""),
+         cod_regsaud = as.integer(cod_regsaud)) |> 
+  left_join(spdf_fortified, by = c("cod_regsaud" = "reg_id"))
 
 
 
@@ -55,25 +72,40 @@ taxa_retencao <-
 
 
 a <- 
-  ggplot(taxa_retencao, aes(x = regiao, y = taxa, fill = regiao)) +
-  geom_boxplot() + 
-  ggtitle("Distribuição das taxas de retenção de enfermeiros agregadas por regiões do Brasil em 2024",
-          "Fonte: ???, competência de janeiro de 2024") +
-  labs(x = "Região",
-       y = "Taxa de retenção") +
+  ggplot() +
+  geom_sf(data = taxa_retencao, 
+          aes(fill = taxa, geometry = geometry), 
+          color = "#f5f5f5") +
+  geom_sf(data = estados_br, 
+          fill = NA, 
+          color = "#4c4d4a", 
+          size = 0.1) + 
+  scale_fill_gradientn(colors = c("#D92B3A", 
+                                  "#d4e302",
+                                  "#02592e"), 
+                       values = rescale(c(0.2, 0.4, 0.6, 0.83)), 
+                       limits = c(0.2, 0.83), 
+                       breaks = c(0.2, 0.4, 0.6, 0.83)) +
   theme_minimal() +
-  theme(plot.title = element_text(size = 20, face = "bold"),
-        plot.subtitle = element_text(size = 18),
-        axis.title = element_text(size = 20),
-        axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 16),
-        legend.position = "none")
+  labs(fill = "Relative gap") +
+  theme(
+    legend.position = "none",
+    legend.justification = "center",
+    legend.box = "horizontal",
+    axis.title = element_text(size = 20),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 16),
+    legend.text = element_text(size = 14),
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 18),
+    panel.border = element_rect(color = "black", 
+                                fill = NA, 
+                                size = 1), 
+    plot.margin = margin(10, 10, 10, 10)) +
+  ggtitle("Distribuição das taxas de retenção de médicos agregadas por regiões de saúde do Brasil em 2024",
+          "Fonte: ???, competência de janeiro de 2024") 
 
 
 a
-
-
-ggsave(filename = "taxa_retencao.jpeg", plot = a,
-       dpi = 400, width = 16, height = 10)
 
 
