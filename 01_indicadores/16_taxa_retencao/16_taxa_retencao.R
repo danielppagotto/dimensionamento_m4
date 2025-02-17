@@ -81,27 +81,40 @@ a <- ggplot() +
                                   "#d4e302",
                                   "#02592e")) +
   theme_minimal() +
-  labs(fill = "Relative gap") +
+  labs(fill = "Retenção", 
+       x = "Longitude", 
+       y = "Latitude") +
+  annotation_north_arrow(location = "tr",  
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering()) +
+  annotation_scale(location = "bl", width_hint = 0.3) +
+  annotate("text", x = -Inf, y = Inf, label = "1", # Canto superior esquerdo
+           hjust = -0.5, vjust = 1.5, size = 6) + 
   theme(
-    legend.position = "none",
+    legend.position = "right",
     legend.justification = "center",
-    legend.box = "horizontal",
+    legend.box = "vertical",
+    legend.key.height = unit(1, "cm"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 14),
     axis.title = element_text(size = 18),
     axis.text.x = element_text(size = 16),
     axis.text.y = element_text(size = 16),
-    legend.text = element_text(size = 14),
-    plot.title = element_text(size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 16),
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 18),
     panel.border = element_rect(color = "black", 
                                 fill = NA, 
                                 size = 1), 
     plot.margin = margin(10, 10, 10, 10)) +
-  ggtitle("Distribuição das taxas de retenção de médicos agregadas\npor regiões de saúde do Brasil em 2024",
-          "Fonte: CNES-PF, competência de janeiro de 2024") 
+  ggtitle("Distribuição das taxas de retenção de médicos agregadas\npor regiões de saúde do Brasil",
+          "Fonte: CNES-Profissionais")
+
 
 
 a
 
-ggsave(filename = "01_indicadores/16_taxa_retencao/retencao.jpeg",plot = a,
-       dpi = 500, height = 8, width = 8)
+
+ggsave(filename = "taxa_retencao.jpeg",plot = a,
+       dpi = 400, width = 16, height = 10)
+
 
