@@ -12,6 +12,7 @@ library(ggplot2)
 
 # Leitura dos dados -------------------------------------------------------
 
+
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
 dremio_uid <- Sys.getenv("uid")
@@ -30,43 +31,69 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de profissionais por população"'
 
 
 profissionais <- sqlQuery(channel, 
-                         query,
-                         as.is = TRUE)
+                          query,
+                          as.is = TRUE)
+
+
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
+
 
 
 # tratamento dos dados ----------------------------------------------------
 
-profissionais$populacao <- as.integer(profissionais$populacao)
+
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao <- 
+  populacao |>
+  filter(ano %in% c(2014, 2024)) |>
+  group_by(ano, regiao) |>
+  summarise(pop = sum(populacao))
+
+
+profissionais$ano <- as.integer(profissionais$ano)
 profissionais$total <- as.integer(profissionais$total)
 
 
-profissionaiss <- 
+profissionais <- 
   profissionais |> 
   filter(ano %in% c(2014, 2024),
          categoria == "Agente Comunitário de Saúde") |>
   group_by(ano, regiao) |> 
-  summarise(pop = sum(populacao),
-            total = sum(total)) |> 
+  summarise(total = sum(total)) 
+
+
+prof_pop <-
+  profissionais  |> 
+  left_join(populacao, by = c("ano", "regiao")) |>
   mutate(razao = 10000 * (total)/pop)
+
 
 
 # Criação do gráfico ------------------------------------------------------------
 
+
 a <- 
-  ggplot(profissionaiss, aes(x = regiao, y = razao, fill = factor(ano))) +
+  ggplot(prof_pop, aes(x = regiao, y = razao, fill = factor(ano))) +
   geom_col(position = "dodge") +  
   geom_text(aes(label = round(razao, 2)),    
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 5) + 
-  
-  ggtitle("Comparação da Razão de ACS por População nas Regiões do Brasil",
-       "Fonte: CNES-PF, competência de janeiro de cada ano") +
+  ggtitle("Comparação da razão de agentes comunitários de saúde por população nas regiões do Brasil",
+          "Fonte: CNES-Profissionais, competência de janeiro de cada ano; população de acordo com projeções SVSA") +
   labs(x = "Região",
-       y = "Razão (total de ACS por 10.000 habitantes)",
+       y = "Razão (profissionais por 10 mil habitantes)",
        fill = "Ano") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
@@ -77,8 +104,12 @@ a <-
         legend.position = "top", 
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 14))
+
+
 a
+
 
 ggsave(filename = "razao_profissionais.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
+
 
