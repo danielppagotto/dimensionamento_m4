@@ -1,14 +1,12 @@
--- razao de profissionais por populacao 
-
 WITH 
 CNES_TRATADO     
     AS( 
         SELECT 
-            substr(pf.COMPETEN, 1, 4) AS ano,
+            substr(PF.COMPETEN, 1, 4) AS ano,
             CASE
-                WHEN LENGTH(pf.codufmun) = 7 THEN SUBSTR(pf.codufmun, 1, 6)
-                WHEN pf.codufmun LIKE '53%' THEN '530010' 
-                ELSE pf.codufmun
+                WHEN LENGTH(PF.codufmun) = 7 THEN SUBSTR(PF.codufmun, 1, 6)
+                WHEN PF.codufmun LIKE '53%' THEN '530010' 
+                ELSE PF.codufmun
             END AS cod_ibge,
             PF.uf, 
             PF.CPF_PROF,
@@ -113,8 +111,7 @@ SELECT
     A.categoria, 
     A.total,
     C.populacao,
-    (CAST(A.total AS FLOAT) / CAST(C.populacao AS FLOAT)) * 1000 AS taxa_populacao,
-    (CAST(D.FTE_40 AS FLOAT) / CAST(C.populacao AS FLOAT)) * 1000 AS taxa_FTE
+    (CAST(A.total AS FLOAT) / CAST(C.populacao AS FLOAT)) * 10000 AS taxa_populacao
 FROM CONTAGEM A
 LEFT JOIN 
     "Open Analytics Layer".Territorial."Hierarquia completa dos municípios" B
@@ -122,6 +119,3 @@ LEFT JOIN
 LEFT JOIN 
     "Open Analytics Layer".Territorial."População SVS por município e ano" C
     ON A.cod_ibge = C.cod_ibge AND A.ano = C.ano
-LEFT JOIN
-    "Open Analytics Layer".Profissionais."Razão de profissionais por população segundo padronização de FTE" D
-    ON A.cod_ibge = D.cod_ibge AND A.ano = D.ano AND A.categoria = D.categoria

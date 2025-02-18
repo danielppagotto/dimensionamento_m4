@@ -17,7 +17,7 @@ WITH
         h.municipio,
         h.latitude,
         h.longitude,
-    COUNT(DISTINCT CONCAT(CPF_PROF, CBO)) AS qtd_distinta_cpf_cbo,
+    COUNT(DISTINCT (CPF_PROF)) AS qtd_distinta_cpf_cbo,
     SUM(pf.HORAOUTR+pf.HORAHOSP+pf.HORA_AMB) AS ch_total,
     CAST((CAST((SUM(pf.HORAOUTR+pf.HORAHOSP+pf.HORA_AMB)) AS FLOAT)/CAST(40 AS FLOAT)) AS FLOAT) AS FTE_40
     FROM Dados.cnes.PF 
@@ -58,8 +58,8 @@ SELECT
     a.ch_total,
     a.FTE_40,
     b.populacao,
-    (CAST(a.qtd_distinta_cpf_cbo AS FLOAT) / CAST(b.populacao AS FLOAT)) * 1000 AS medicos_populacao,
-    (CAST(a.FTE_40 AS FLOAT) / CAST(b.populacao AS FLOAT)) * 1000 AS FTE_populacao    
+    (CAST(a.qtd_distinta_cpf_cbo AS FLOAT) / CAST(b.populacao AS FLOAT)) * 10000 AS medicos_populacao,
+    (CAST(a.FTE_40 AS FLOAT) / CAST(b.populacao AS FLOAT)) * 10000 AS FTE_populacao    
 FROM medicos_familia a
 LEFT JOIN 
     "Open Analytics Layer".Territorial."População SVS por município e ano" b
