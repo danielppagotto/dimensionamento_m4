@@ -118,15 +118,19 @@ SELECT
     m.macrorregiao,
     m.cod_regsaud,
     m.regiao_saude,
-    cod_ibge,
+    ch.cod_ibge,
     m.municipio,
     m.latitude,
     m.longitude,
     ch.categoria,
     ch.nivel_atencao,
     ch.ch_total,
-    CAST((CAST(ch.ch_total AS FLOAT)/CAST(40 AS FLOAT)) AS FLOAT) AS FTE_40
+    CAST((CAST(ch.ch_total AS FLOAT)/CAST(40 AS FLOAT)) AS FLOAT) AS FTE_40,
+    FTE_40 / CAST(b.populacao AS FLOAT) * 10000 AS FTE_populacao    
 FROM profissionais_CH ch
 LEFT JOIN "Open Analytics Layer".Territorial."Hierarquia completa dos municípios" m
     ON CAST(ch.cod_ibge AS INTEGER) = m.cod_municipio
+LEFT JOIN 
+    "Open Analytics Layer".Territorial."População SVS por município e ano" b
+    ON ch.cod_ibge = b.cod_ibge AND ch.ano = b.ano
 WHERE ch.categoria IS NOT NULL

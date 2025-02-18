@@ -8,7 +8,9 @@ library(ggrepel)
 library(ggspatial) 
 
 
+
 # Leitura dos dados -------------------------------------------------------
+
 
 dremio_host <- Sys.getenv("endereco")
 dremio_port <- Sys.getenv("port")
@@ -28,55 +30,87 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_uid, 
                                      dremio_pwd))
 
+
 query <- 'SELECT * FROM "Open Analytics Layer"."Epidemiológico".Mortalidade."Taxa de mortalidade por homicídios"'
 
 
 homicidios <- sqlQuery(channel, 
-                         query,
-                         as.is = TRUE)
+                       query,
+                       as.is = TRUE)
+
+
+populacao_query <- 'SELECT * FROM "Open Analytics Layer".Territorial."População SVS por município e ano"'
+
+
+populacao <- sqlQuery(channel, 
+                      populacao_query, 
+                      as.is = TRUE)
 
 
 # tratamento dos dados ----------------------------------------------------
 
-homicidios$populacao <- as.integer(homicidios$populacao)
+
+populacao$populacao <- as.integer(populacao$populacao)
+
+
+populacao <- 
+  populacao |>
+  filter (ano == '2023') |> 
+  group_by(ano, regiao) |>
+  summarise(pop = sum(populacao))
+
+
+homicidios$ano <- as.integer(homicidios$ano)
 homicidios$obitos_ano_homicidio <- as.integer(homicidios$obitos_ano_homicidio)
 homicidios$taxa_homicidios_por_populacao <- as.numeric(homicidios$taxa_homicidios_por_populacao)
+
 
 mortalidade <- 
   homicidios |> 
   drop_na() |> 
   filter(ano == "2023") |> 
   group_by(ano, regiao) |> 
-  summarise(
-    pop = sum(populacao, na.rm = TRUE),
-    obitos = sum(obitos_ano_homicidio, na.rm = TRUE)) |> 
-  mutate(razao = 100000 * obitos / pop) |> 
-  mutate(Região = substr(regiao, 7, 27))
+  summarise(obitos = sum(obitos_ano_homicidio, na.rm = TRUE))
+
+mortalidade_pop <-
+  mortalidade |>
+  left_join(populacao, by = c("ano", "regiao")) |>
+  mutate(razao = 100000 * obitos / pop) |>
+  drop_na() |>
+  mutate(regiao = str_replace(regiao, "Região ", ""))
+
 
 
 # Criação do Gráfico ------------------------------------------------------
 
-a <- mortalidade %>%
-  ggplot(aes(x = "", y = razao, fill = Região, label = sprintf("%.1f%%", razao))) +
-  geom_bar(stat = "identity", width = 2, color = "black", size = 1) +
-  coord_polar(theta = "y") +  # Faz o gráfico circular (pizza)
-  ggtitle("Distribuição da Taxa de Homicídios por Região em 2023", 
+
+a <- mortalidade_pop |> 
+  ggplot(aes(x = fct_reorder(regiao, razao), y = razao, fill = regiao)) +
+  geom_col(position = "dodge") +  
+  coord_flip() +
+  geom_text(aes(label = round(razao, 2)),    
+            position = position_dodge(width = 0.9), 
+            hjust = -0.1, size = 5) + 
+  ggtitle("Distribuição da taxa de homicídios por região do Brasil em 2023", 
           "Fonte: Sistema de Informação sobre Mortalidade (SIM)") +
-  labs(fill = "Região") +
-  geom_text(aes(label = sprintf("%.1f%%", razao)), position = position_stack(vjust = 0.5), size = 7) +
-  theme_void() +
-  theme(
-    legend.position = "right",
-    legend.box.margin = margin(0, 10, 0, -20),
-    legend.margin = margin(0, 0, -10, -10),
-    plot.margin = margin(-1.5, 1, -1.5, 1, "mm"),
-    legend.title = element_text(size = 16),
-    legend.text = element_text(size = 14),
-    plot.title = element_text(size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 18))
+  labs(x = "Região",
+       y = "Taxa de homicídios (óbitos por 100 mil habitantes)",
+       fill = "Região") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 20, face = "bold"),
+        plot.subtitle = element_text(size = 18),
+        axis.title = element_text(size = 20),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16),
+        legend.position = "none", 
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 14))
+
 
 a
 
-ggsave(filename = "homicidios.jpeg", plot = a,
+
+ggsave(filename = "taxa_homicidios.jpeg", plot = a,
        dpi = 400, width = 16, height = 8)
+
 

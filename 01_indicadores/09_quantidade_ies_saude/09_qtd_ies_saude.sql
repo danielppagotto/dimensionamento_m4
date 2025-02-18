@@ -1,4 +1,3 @@
-
 SELECT 
     a.ano,
     h.regiao,
