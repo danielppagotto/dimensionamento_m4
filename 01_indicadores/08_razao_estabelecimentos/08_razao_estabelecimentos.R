@@ -101,11 +101,19 @@ a <- estab_pop_summary |>
   geom_point(size = 2) +
   geom_ribbon(aes(ymin = mean_razao - sem_razao, ymax = mean_razao + sem_razao, fill = uf_sigla), 
               alpha = 0.2, color = NA) +
+<<<<<<< HEAD
   ggtitle("Evolução da razão de estabelecimentos por população nos estados da Região Sul do Brasil",
           "Fonte: CNES-Estabelecimentos, competência de janeiro de cada ano, população de acordo com projeções SVSA") +
   labs(
     x = "Ano",
     y = "Razão (total de estabelecimentos por 10.000 habitantes)",
+=======
+  ggtitle("Evolução da razão de estabelecimentos de saúde por população nos estados da Região Sul do Brasil",
+          "Fonte: CNES-Estabelecimentos, competência de janeiro de cada ano, população de acordo com projeções SVSA") +
+  labs(
+    x = "Ano",
+    y = "Razão (total de estabelecimentos por 10 mil habitantes)",
+>>>>>>> 7ee83f97fa6a90354bf1d7f1d5627ab65b587670
     color = "Estado",
     fill = "Estado"  
   ) +
