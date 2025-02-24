@@ -1,14 +1,11 @@
 
 library(tidyverse)
-<<<<<<< HEAD
 library(RODBC)
 library(geobr)
 library(scales)
 library(sf) 
 library(ggrepel) 
 library(ggspatial) 
-
-=======
 library(arrow)
 library(patchwork)
 library(geojsonio)
@@ -20,7 +17,6 @@ library(sf)
 library(readxl)
 library(leaflet)
 library(RODBC)
->>>>>>> 7ee83f97fa6a90354bf1d7f1d5627ab65b587670
 
 
 # Leitura dos Dados -------------------------------------------------------
@@ -45,11 +41,9 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-<<<<<<< HEAD
 query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Taxa de Retenção de Profissionais"'
-=======
+
 query <- 'SELECT * FROM Dados.retencao."Médico_retencao_geral.parquet"'
->>>>>>> 7ee83f97fa6a90354bf1d7f1d5627ab65b587670
 
 
 retencao <- sqlQuery(channel, 
@@ -67,7 +61,7 @@ taxa_retencao <-
   filter(ano == '2024',
          categoria == "Enfermeiros") |> 
   mutate(regiao = str_replace(regiao, "Região ", ""))
-=======
+
 estados_br <- read_state(year = 2020,
                          showProgress = FALSE)
 
@@ -85,13 +79,9 @@ taxa_retencao <-
   left_join(spdf_fortified, 
             by = c("regiao_saude" = "reg_id")) |> 
   rename(taxa = retencao_geral)
->>>>>>> 7ee83f97fa6a90354bf1d7f1d5627ab65b587670
-
 
 
 # Criação do mapa ------------------------------------------------------------
-
-<<<<<<< HEAD
 
 a <- 
   ggplot(taxa_retencao, aes(x = regiao, y = taxa, fill = regiao)) +
