@@ -50,5 +50,6 @@ LEFT JOIN "Open Analytics Layer".Territorial."Hierarquia completa dos município
 LEFT JOIN "Open Analytics Layer".Territorial."População SVS por município e ano" c
     ON a.cod_ibge = CAST(c.cod_ibge AS CHARACTER) AND a.ano = c.ano     
 WHERE 
-    obitos_ano_homicidio IS NOT NULL AND
+    obitos_ano_homicidio IS NOT NULL AND 
+    uf_sigla IS NOT NULL AND 
     ano > '2009'
