@@ -32,7 +32,7 @@ channel <- odbcDriverConnect(sprintf("DRIVER=Dremio Connector;
                                      dremio_pwd))
 
 
-query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Percentual de força de trabalho habilitada atuando em estabelecimentos de saúde"'
+query <- 'SELECT * FROM "Open Analytics Layer".Profissionais."Razão de profissionais habilitados por população"'
 
 
 trabalho <- sqlQuery(channel, 
@@ -44,7 +44,6 @@ trabalho <- sqlQuery(channel,
 # tratamento dos dados ----------------------------------------------------
 
 
-trabalho$atuantes <- as.integer(trabalho$atuantes)
 trabalho$habilitados <- as.integer(trabalho$habilitados)
 
 
@@ -52,7 +51,6 @@ força_trabalho <-
   trabalho |> 
   filter(categoria == "Enfermeiros", uf %in% c("GO", "MS", "MT", "DF")) |> 
   group_by(uf) |>
-  summarise(percentual = 100 * sum(atuantes) / sum(habilitados)) |> 
   drop_na()
 
 
@@ -61,13 +59,13 @@ força_trabalho <-
 
 
 a <- força_trabalho |> 
-  ggplot(aes(x = percentual, y = reorder(uf, percentual))) + 
+  ggplot(aes(x = taxa_populacao, y = reorder(uf, taxa_populacao))) + 
   geom_col() +  # Troquei geom_line por geom_col para representar barras
   theme_minimal() + 
-  xlab("Percentual (%)") +
+  xlab("Razão (profissionais por 10 mil habitantes)") +
   ylab("UF") +
-  ggtitle("Percentual de enfermeiros atuantes em estabelecimentos de saúde\nem relação aos habilitados por UF do Centro-Oeste",
-          "Fonte: CNES-Profissionais e conselhos das profissões de saúde, competência de janeiro de 2024") +
+  ggtitle("Razão de enfermeiros habilitados por população no Centro-Oeste",
+          "Fonte: Conselhos de Saúde, competência de janeiro de 2024; população de acordo com projeções SVSA") +
   theme_minimal() +
   theme(plot.title = element_text(size = 20, face = "bold"),
         plot.subtitle = element_text(size = 18),
@@ -82,7 +80,7 @@ a <- força_trabalho |>
 a
 
 
-ggsave(filename = "habilitada_vs_estabelecimentos.jpeg", plot = a,
+ggsave(filename = "15_razao_habilitados.jpeg", plot = a,
        dpi = 400, width = 16, height = 10)
 
 
