@@ -3,7 +3,7 @@ SELECT
     A.categoria,
     A.qtd_2024 AS habilitados,
     B.populacao,
-    CAST(A.qtd_2024 * 10000 AS FLOAT) / B.populacao AS taxa_populacao
+    CAST(A.qtd_2024 * 1000 AS FLOAT) / B.populacao AS taxa_populacao
 FROM
     dados.conselhos."conselhos_2024.parquet" A
 LEFT JOIN   (
