@@ -62,7 +62,7 @@ a <- força_trabalho |>
   ggplot(aes(x = taxa_populacao, y = reorder(uf, taxa_populacao))) + 
   geom_col() +  # Troquei geom_line por geom_col para representar barras
   theme_minimal() + 
-  xlab("Razão (profissionais por 10 mil habitantes)") +
+  xlab("Razão (profissionais por mil habitantes)") +
   ylab("UF") +
   ggtitle("Razão de enfermeiros habilitados por população no Centro-Oeste",
           "Fonte: Conselhos de Saúde, competência de janeiro de 2024; população de acordo com projeções SVSA") +
